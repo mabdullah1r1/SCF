@@ -8,16 +8,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    inputs:
-      deploy_target:
-        description: 'Deployment Target'
-        required: true
-        default: 'production'
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'staging'
     steps:
       - name: Set Run Name
-        run: echo "run-name: Deploy - Target: ${{ inputs.deploy_target }} - Environment: ${{ inputs.environment }}"
+        run: |
+          echo "run-name: Deploy - Target: $INPUT_DEPLOY_TARGET - Environment: $INPUT_ENVIRONMENT"
 
+        env:
+          INPUT_DEPLOY_TARGET: ${{ github.event.inputs.deploy_target }}
+          INPUT_ENVIRONMENT: ${{ github.event.inputs.environment }}
+
+      # Additional steps for your workflow
