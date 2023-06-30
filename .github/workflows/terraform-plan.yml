@@ -1,0 +1,24 @@
+name: Custom Runner Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  custom-runner-job:
+    runs-on: self-hosted
+    inputs:
+      deploy_target:
+        description: 'Deployment Target'
+        required: true
+        default: 'production'
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'staging'
+    steps:
+      - name: Set Run Name
+        run: echo "run-name: Deploy - Target: ${{ inputs.deploy_target }} - Environment: ${{ inputs.environment }}"
+
+      # Additional steps for your workflow
