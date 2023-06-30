@@ -21,4 +21,3 @@ jobs:
       - name: Set Run Name
         run: echo "run-name: Deploy - Target: ${{ inputs.deploy_target }} - Environment: ${{ inputs.environment }}"
 
-      # Additional steps for your workflow
