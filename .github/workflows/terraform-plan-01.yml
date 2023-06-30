@@ -1,5 +1,3 @@
-name: Custom Runner Workflow
-
 on:
   workflow_dispatch:
     inputs:
@@ -12,19 +10,23 @@ on:
           - info
           - warning
           - debug
+      print_tags:
+        description: 'True to print to STDOUT'
+        required: true
+        type: boolean
+      tags:
+        description: 'Test scenario tags'
+        required: true
+        type: string
       environment:
         description: 'Environment to run tests against'
+        type: environment
         required: true
 
 jobs:
-  run-tests:
+  print-tag:
     runs-on: ubuntu-latest
+    if:  ${{ inputs.print_tags }} 
     steps:
-      - name: Set Log Level
-        run: echo "::set-env name=LOG_LEVEL::${{ github.event.inputs.logLevel }}"
-      
-      - name: Run Tests
-        run: |
-          echo "Running tests against ${{ github.event.inputs.environment }}"
-          echo "Log level: $LOG_LEVEL"
-          # Run your tests here
+      - name: Print the input tag to STDOUT
+        run: echo  The tags are ${{ inputs.tags }} 
