@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  custom-runner-job:
-    runs-on: self-hosted
+  deploy:
+    runs-on: ubuntu-latest
     inputs:
       deploy_target:
         description: 'Deployment Target'
