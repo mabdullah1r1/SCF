@@ -39,7 +39,10 @@ jobs:
       id: fmt
       run: terraform fmt -check
       working-directory: ${{ env.ROOT_PATH }}
-      
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.MY_GITHUB_TOKEN }}  
     - name: generate TF Docs
       uses: terraform-docs/gh-actions@v1.0.0
       with:
