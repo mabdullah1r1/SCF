@@ -1,28 +1,19 @@
-
 name: 'Terraform-Execute'
 
 on:
-#  push:
-#    branches:
-#      - main
-#    paths:
-#      - "/actions/terraform-azure/*"
-#  pull_request:
-#    branches:
-#      - main
-  workflow_dispatch: #this attribute will enable the manual run to the pipeline
-  
+  workflow_dispatch: # This attribute will enable manual runs of the pipeline
 
-# Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+# Use the Bash shell regardless of the GitHub Actions runner
 defaults:
   run:
     shell: bash
+
 env: 
-  ROOT_PATH: '${{github.workspace}}/src/deployment/terraform'
-  ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
-  ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
-  ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
-  ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+  ROOT_PATH: '${{ github.workspace }}/src/deployment/terraform'
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   STAGE_NAME: production
 
 jobs:
@@ -34,27 +25,30 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup terraform
+    - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
   
-    - name: terraform init
+    - name: Terraform Init
       run: terraform init
       working-directory: ${{ env.ROOT_PATH }}
-    - name: Save state
-      run: echo "::save-state name={name}::{value}"
 
-    - name: Set output
-      run: echo "::set-output name={name}::{value}"
-    - name: terraform Plan
+#    - name: Save State
+#      run: echo "::save-state name=name::${{ job.name }}"
+      
+#    - name: Set Output
+#      run: echo "::set-output name=name::${{ job.name }}"
+      
+    - name: Terraform Plan
       run: terraform plan 
       working-directory: ${{ env.ROOT_PATH }}
-    - name: Save state
-      run: echo "::save-state name={name}::{value}"
 
-    - name: Set output
-      run: echo "::set-output name={name}::{value}"      
+    - name: Save State
+      run: echo "::save-state name=plan_output::${{ steps.plan.outputs.stdout }}"
+
+    - name: Set Output
+      run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"      
 
   terraform_apply:
     name: 'terraform apply'
@@ -62,34 +56,24 @@ jobs:
     runs-on: ubuntu-latest
     environment: Terraform-execute
     
-    defaults:
-      run:
-        shell: bash
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup terraform
+    - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
  
-    - name: terraform Init
+    - name: Terraform Init
       run: terraform init
       working-directory: ${{ env.ROOT_PATH }}
 
-    - name: terraform Init
-      run: echo 'var -> ${{inputs.tf_destroy}}'
+    - name: Check Variable
+      run: echo "var -> ${{ inputs.tf_destroy }}"
       working-directory: ${{ env.ROOT_PATH }}
 
-      #github.ref == 'refs/heads/main' && github.event_name == 'push'
-    - name: terraform Apply
+    - name: Terraform Apply
       run: terraform apply -auto-approve
-      if: ${{inputs.tf_destroy}} == false
+      if: ${{ inputs.tf_destroy == 'false' }}
       working-directory: ${{ env.ROOT_PATH }}
-
-    # - name: terraform destroy
-    #   run: terraform destroy -auto-approve
-    #   if: ${{inputs.tf_destroy}} == true
-    #   working-directory: ${{ env.ROOT_PATH }}
