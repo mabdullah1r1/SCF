@@ -12,14 +12,14 @@ on:
           - inti
           - plan
           - apply
-      print_tags:
-        description: 'True to print to STDOUT'
-        required: true
-        type: boolean
-      tags:
-        description: 'Test scenario tags'
-        required: true
-        type: string
+      #print_tags:
+        #description: 'True to print to STDOUT'
+        #required: true
+        #type: boolean
+      #tags:
+        #description: 'Test scenario tags'
+        #required: true
+        #type: string
      
 env: 
   ROOT_PATH: '${{github.workspace}}/src/deployement/terraform'
@@ -31,9 +31,9 @@ env:
   
 jobs:
   Terraform:
-    name: 'Terraform Int'
+    #name: 'Terraform Int'
     runs-on: ubuntu-latest
-    if:  ${{ inputs.print_tags }} 
+    #if:  ${{ inputs.print_tags }} 
         
     steps:
        
@@ -47,7 +47,7 @@ jobs:
          #repository: mabdullah1r1/SCF
          #path: SCF
     
-     - name: terraform-version
+     - name: terraform-version-init
        uses: hashicorp/setup-terraform@v2
        with:
           action: init
@@ -55,7 +55,7 @@ jobs:
     
     
      - name: terraform validate
-       needs: [terraform_init]
+       #needs: [terraform_init]
        uses: hashicorp/setup-terraform@v2
        with:
           action: validate
@@ -70,8 +70,8 @@ jobs:
 
 
      - name: terraform apply
-       enviroment : Terraform-execute
-       needs: [terraform_plan]
+      # enviroment : Terraform-execute
+     # needs: [terraform_plan]
        uses: hashicorp/setup-terraform@v2
        with:
           action: apply --auto-aproval
