@@ -43,7 +43,7 @@ jobs:
     - name: generate TF Docs
       uses: terraform-docs/gh-actions@v1.0.0
       with:
-         find-dir: find ./src -name "*.tf"
+         find-dir: find ./find\_dir -src \*.tf
          output-file: README.md
          output-method: inject
       
