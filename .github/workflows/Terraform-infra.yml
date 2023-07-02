@@ -44,8 +44,8 @@ jobs:
       uses: terraform-docs/gh-actions@v1.0.0
       with:
          find-dir: ${{ env.ROOT_PATH }}
-         output-file: README.md
-         output-method: inject
+         output-file: READMES.md
+         #output-method: inject
       
     - name: terraform init
       run: terraform init
