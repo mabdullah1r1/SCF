@@ -6,11 +6,11 @@ on:
     inputs:
        stages:
           description: 'choose your stages'
-          default: ''
+          default: 'apply'
           type: choice
           options:
-            -plan
-            -apply
+            - plan
+            - apply
             
 
 # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
