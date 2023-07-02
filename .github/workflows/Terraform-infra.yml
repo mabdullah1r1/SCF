@@ -93,13 +93,13 @@ jobs:
       run: ls -R
       working-directory: ${{ env.ROOT_PATH }}
       
-      #if: github.event.inputs.include_step2 == 'true'
+  
       
   terraform_apply:
     name: 'Terraform Apply'
-    needs: [terraform_plan]
+    needs: [terraform_deploy]
     environment: production
-    
+    runs-on: ubuntu-latest
     if: |
       github.event.inputs.stages == 'apply' &&
       contains(needs.terraform_plan.result, 'success') &&
