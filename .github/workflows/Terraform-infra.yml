@@ -46,6 +46,7 @@ jobs:
          find-dir: ${{ env.ROOT_PATH }}
          output-file: READMESS.md
          output-method: inject
+         git-push: "true"
       
     - name: terraform init
       run: terraform init
