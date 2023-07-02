@@ -81,7 +81,7 @@ jobs:
     
     - name: Display structure of downloaded files
       run: ls -R
-      working-directory: path/to/artifact
+      working-directory: ${{ env.ROOT_PATH }}
 
   terraform_apply:
     name: 'terraform apply'
