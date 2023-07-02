@@ -101,7 +101,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     if: |
-        if [[ "${{ inputs.tf_destroy }}" == "false" ]]; then
+        if [[ "${{ github.event.inputs.stages.apply }}" == "apply" ]]; then
           terraform apply -auto-approve
         else
           echo "Skipping Terraform apply due to tf_destroy=true"
