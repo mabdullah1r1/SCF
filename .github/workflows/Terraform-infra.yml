@@ -11,7 +11,7 @@ on:
           options:
             - plan
             - apply
-            
+          required: true  
 
 # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
 defaults:
