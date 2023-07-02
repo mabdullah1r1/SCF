@@ -1,4 +1,7 @@
 terraform {
+  backend "local" {
+    path = "terraform"
+  }
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
