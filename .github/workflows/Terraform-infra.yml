@@ -74,6 +74,13 @@ jobs:
       with:
         name: my-artifact
         path: ${{ env.ROOT_PATH }}
+        
+    - uses: actions/download-artifact@v3
+      with:
+        name: my-artifact
+    
+    - name: Display structure of downloaded files
+      run: ls -R
 
   terraform_apply:
     name: 'terraform apply'
