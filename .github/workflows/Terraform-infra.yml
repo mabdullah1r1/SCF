@@ -35,15 +35,18 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        
     - name: terraform format
       id: fmt
       run: terraform fmt -check
       working-directory: ${{ env.ROOT_PATH }}
+      
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.MY_GITHUB_TOKEN }}
         branch: ${{ github.ref }}
+        ref: ${{ github.event.pull_request.head.ref }}
         
     - name: generate TF Docs
       uses: terraform-docs/gh-actions@v1.0.0
