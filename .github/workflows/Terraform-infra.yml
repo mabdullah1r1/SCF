@@ -3,7 +3,15 @@ name: 'terraform-deploy'
 on:
 
   workflow_dispatch: #this attribute will enable the manual run to the pipeline
-  
+    inputs:
+       stages:
+          description: 'choose your stages'
+          default: ''
+          type: choice
+          options:
+            -plan
+            -apply
+            
 
 # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
 defaults:
