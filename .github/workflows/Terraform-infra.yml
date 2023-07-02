@@ -2,9 +2,9 @@
 name: 'Terraform-Execute'
 
 on:
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
 #    paths:
 #      - "/actions/terraform-azure/*"
 #  pull_request:
