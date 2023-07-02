@@ -1,9 +1,8 @@
-resource "null_resource" "example" {
-  # Arbitrary name for the null_resource instance
-  name = "example"
+provider "azurerm" {
+  features {}
+}
 
-  # Local-exec provisioner to execute a command
-  provisioner "local-exec" {
-    command = "echo 'Hello, Terraform!'"
-  }
+resource "azurerm_resource_group" "example" {
+  name     = "my001-resource100-group001"
+  location = "West Europe"
 }
