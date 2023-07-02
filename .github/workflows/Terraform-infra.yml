@@ -45,6 +45,12 @@ jobs:
       run: terraform plan 
       working-directory: ${{ env.ROOT_PATH }}
       
+    - name: Save State
+      run: echo "::save-state name=plan_output::${{ steps.plan.outputs.stdout }}"
+
+    - name: Set Output
+      run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"      
+
 
   terraform_apply:
     name: 'terraform apply'
