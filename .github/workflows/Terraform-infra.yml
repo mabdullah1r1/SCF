@@ -34,7 +34,7 @@ jobs:
     name: 'Terraform Int'
     runs-on: ubuntu-latest
     if:  ${{ inputs.print_tags }} 
-    enviroment : plan
+    
     
     steps:
        
@@ -55,7 +55,7 @@ jobs:
           directory: ${{env.ROOT_PATH}}
           
      - name: terraform validate
-       needs: [terraform_init]
+     
        uses: hashicorp/setup-terraform@v2
        with:
           action: validate
@@ -68,7 +68,7 @@ jobs:
           working-directory: ${{ env.ROOT_PATH }}
 
      - name: terraform apply
-       needs: [terraform_plan]
+       
        uses: hashicorp/setup-terraform@v2
        with:
           action: apply --auto-aproval
