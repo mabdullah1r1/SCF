@@ -70,6 +70,10 @@ jobs:
     - name: Set Output
       run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"      
 
+    - uses: actions/upload-artifact@v3
+      with:
+        name: my-artifact
+        path: ${{ env.ROOT_PATH }}
 
   terraform_apply:
     name: 'terraform apply'
@@ -87,7 +91,7 @@ jobs:
 
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v1
-      with:
+      with: 
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
  
     - name: terraform Init
