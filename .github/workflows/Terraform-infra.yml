@@ -71,7 +71,7 @@ jobs:
     - name: terraform Plan
       run: terraform plan 
       working-directory: ${{ env.ROOT_PATH }}
-      if: github.event.inputs.include_step2 == 'true'
+      #if: github.event.inputs.stages == 'apply'
        
        
     - name: Save State
@@ -93,8 +93,33 @@ jobs:
       run: ls -R
       working-directory: ${{ env.ROOT_PATH }}
       
-     
+      if: github.event.inputs.include_step2 == 'true'
+      
+      
+  #  - name: terraform Init
+  #    run: terraform init
+  #    working-directory: ${{ env.ROOT_PATH }}
 
+  #  - name: terraform Init
+  #    run: echo 'var -> ${{inputs.tf_destroy}}'
+  #    working-directory: ${{ env.ROOT_PATH }}
+  #    github.ref == 'refs/heads/main' && github.event_name == 'push'
+  
+  
+    - name: terraform Apply
+      needs: [terraform_plan]
+      environment: production
+      run: terraform apply -auto-approve
+     # if: ${{inputs.tf_destroy}} == false
+      working-directory: ${{ env.ROOT_PATH }}
+
+    # - name: terraform destroy
+    #   run: terraform destroy -auto-approve
+    #   if: ${{inputs.tf_destroy}} == true
+    #   working-directory: ${{ env.ROOT_PATH }}
+
+
+      
   terraform_apply:
     name: 'terraform apply'
     needs: [terraform_plan]
