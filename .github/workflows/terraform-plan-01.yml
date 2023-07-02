@@ -1,15 +1,17 @@
+name: 'Terraform'
+
 on:
   workflow_dispatch:
     inputs:
       logLevel:
         description: 'Log level'
         required: true
-        default: 'warning'
+        default: 'inti'
         type: choice
         options:
-          - info
-          - warning
-          - debug
+          - inti
+          - plan
+          - apply
       print_tags:
         description: 'True to print to STDOUT'
         required: true
@@ -19,11 +21,57 @@ on:
         required: true
         type: string
      
-
+env: 
+  ROOT_PATH: '${{github.workspace}}/src/deployement/terraform'
+  ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+  ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+  STAGE_NAME: delivery-apply
+  
 jobs:
-  print-tag:
+  Terraform:
+    name: 'Terraform Int'
     runs-on: ubuntu-latest
     if:  ${{ inputs.print_tags }} 
+    enviroment : plan
+    
     steps:
-      - name: Print the input tag to STDOUT
-        run: echo  The tags are ${{ inputs.tags }} 
+       
+   # Checkout the repository to the GitHub Actions runner
+     - name: checkout
+       uses: actions/checkout@v3
+       with:
+         working-directory: ${{ env.ROOT_PATH }}
+    # Repository name with owner. For example, actions/checkout
+    # Default: ${{ github.repository }}
+         #repository: mabdullah1r1/SCF
+         #path: SCF
+    
+     - name: terraform-version
+       uses: hashicorp/setup-terraform@v2
+       with:
+          action: init
+          directory: ${{env.ROOT_PATH}}
+          
+     - name: terraform validate
+       needs: [terraform_init]
+       uses: hashicorp/setup-terraform@v2
+       with:
+          action: validate
+          working-directory: ${{ env.ROOT_PATH }}
+    
+     - name: terraform plan
+       uses: hashicorp/setup-terraform@v2
+       with:
+          action: plan
+          working-directory: ${{ env.ROOT_PATH }}
+
+     - name: terraform apply
+       needs: [terraform_plan]
+       uses: hashicorp/setup-terraform@v2
+       with:
+          action: apply --auto-aproval
+          working-directory: ${{ env.ROOT_PATH }}
+          
+      
