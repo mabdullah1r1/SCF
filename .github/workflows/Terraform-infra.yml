@@ -1,6 +1,6 @@
 name: 'terraform-deploy'
 
-on:
+#on:
 
   workflow_dispatch: #this attribute will enable the manual run to the pipeline
     inputs:
