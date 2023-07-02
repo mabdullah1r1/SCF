@@ -63,7 +63,9 @@ jobs:
     - name: terraform Plan
       run: terraform plan 
       working-directory: ${{ env.ROOT_PATH }}
-      
+      if: github.event.inputs.include_step2 == 'true'
+       
+       
     - name: Save State
       run: echo "::save-state name=plan_output::${{ steps.plan.outputs.stdout }}"
 
@@ -82,6 +84,8 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R
       working-directory: ${{ env.ROOT_PATH }}
+      
+     
 
   terraform_apply:
     name: 'terraform apply'
