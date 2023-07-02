@@ -35,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -93,6 +92,7 @@ jobs:
       run: ls -R
       working-directory: ${{ env.ROOT_PATH }}
       
+   
   
       
   terraform_apply:
@@ -100,13 +100,7 @@ jobs:
     needs: [terraform_deploy]
     environment: production
     runs-on: ubuntu-latest
-    if: |
-        if [[ "${{ github.event.inputs.stages.apply }}" == "apply" ]]; then
-          terraform apply -auto-approve
-        else
-          echo "Skipping Terraform apply due to tf_destroy=true"
-        fi
-        working-directory: ${{ env.ROOT_PATH }}
+
 
     steps:
       - name: Checkout
@@ -120,6 +114,15 @@ jobs:
       - name: Terraform Init
         run: terraform init
         working-directory: ${{ env.ROOT_PATH }}
+        
+      - name: check manauly?
+        run: |
+          if [[ "${{ github.event.inputs.stages.apply }}" == "apply" ]]; then
+          terraform apply -auto-approve
+          else
+          echo "Skipping Terraform apply due to tf_destroy=true"
+          fi
+        working-directory: ${{ env.ROOT_PATH }}           
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
