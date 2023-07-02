@@ -30,7 +30,7 @@ env:
   #STAGE_NAME: delivery-apply
   
 jobs:
-  Terraform:
+  Terraform-Execute:
     #name: 'Terraform Int'
     runs-on: ubuntu-latest
     #if:  ${{ inputs.print_tags }} 
@@ -41,6 +41,7 @@ jobs:
      - name: checkout
        uses: actions/checkout@v3
        with:
+         terraform_version: 1.1.7
          working-directory: ${{ env.ROOT_PATH }}
     # Repository name with owner. For example, actions/checkout
     # Default: ${{ github.repository }}
