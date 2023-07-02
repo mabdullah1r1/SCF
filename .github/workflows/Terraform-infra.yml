@@ -1,5 +1,4 @@
-
-name: 'terraform-Azure'
+name: 'terraform-deploy'
 
 on:
 
@@ -16,10 +15,10 @@ env:
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
   ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
-  TF_VAR_agent_client_id: ${{ secrets.TF_VAR_agent_client_id }}
-  TF_VAR_agent_client_secret: ${{ secrets.TF_VAR_agent_client_secret }}
-  TF_VAR_subscription_id: ${{ secrets.TF_VAR_subscription_id }}
-  TF_VAR_tenant_id: ${{ secrets.TF_VAR_tenant_id }}
+ # TF_VAR_agent_client_id: ${{ secrets.TF_VAR_agent_client_id }}
+ # TF_VAR_agent_client_secret: ${{ secrets.TF_VAR_agent_client_secret }}
+ # TF_VAR_subscription_id: ${{ secrets.TF_VAR_subscription_id }}
+ # TF_VAR_tenant_id: ${{ secrets.TF_VAR_tenant_id }}
  # STAGE_NAME: production
 
 jobs:
