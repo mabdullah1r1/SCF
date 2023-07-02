@@ -30,7 +30,7 @@ env:
  # STAGE_NAME: production
 
 jobs:
-  terraform_plan:
+  terraform_deploy:
     name: 'terraform plan'
     runs-on: ubuntu-latest
     
@@ -71,7 +71,7 @@ jobs:
     - name: terraform Plan
       run: terraform plan 
       working-directory: ${{ env.ROOT_PATH }}
-      #if: github.event.inputs.stages == 'apply'
+ 
        
        
     - name: Save State
@@ -95,24 +95,49 @@ jobs:
       
       #if: github.event.inputs.include_step2 == 'true'
       
-      
-    - name: Terraform Apply
-      #needs: [terraform_plan]
-      #environment: production
-      run: |
-        if [[ "${{ github.event.inputs.stages }}" == "apply" ]]; then
-          terraform apply -auto-approve
-        else
-          echo "Skipping Terraform apply due to tf_destroy=true"
-        fi
-      working-directory: ${{ env.ROOT_PATH }}
+  terraform_apply:
+    name: 'Terraform Apply'
+    needs: [terraform_plan]
+    environment: production
+    
+    if: |
+      github.event.inputs.stages == 'apply' &&
+      contains(needs.terraform_plan.result, 'success') &&
+      github.event_name == 'workflow_dispatch' &&
+      github.event.workflow_dispatch.inputs.stages == 'apply'
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-   
-   
-   
-   
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ${{ env.ROOT_PATH }}
+        
+        
+        
+    
+#    - name: Terraform Apply
+#      #needs: [terraform_plan]
+#      #environment: production
+#      run: |
+#        if [[ "${{ github.event.inputs.stages }}" == "apply" ]]; then
+#          terraform apply -auto-approve
+#        else
+#          echo "Skipping Terraform apply due to tf_destroy=true"
+#       fi
+#      working-directory: ${{ env.ROOT_PATH }}
+
+  
   #terraform_apply:
   #  name: 'terraform apply'
   #  needs: [terraform_plan]
