@@ -23,7 +23,7 @@ defaults:
     shell: bash
 
 env: 
-  ROOT_PATH: '${{github.workspace}}/src/deployment${{on.input.deployment}}/terraform'
+  ROOT_PATH: '${{github.workspace}}/src/deployment${{github.on.workflow_dispatch.input.deployment}}/terraform'
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
