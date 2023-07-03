@@ -49,6 +49,7 @@ jobs:
         id: fmt
         run: terraform fmt -check
         working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: false
          
       - name: Terraform Init
         run: terraform init
@@ -58,7 +59,8 @@ jobs:
         id: plan
         run: terraform plan 
         working-directory: ${{ env.ROOT_PATH }}
-        if: ${{ github.event.inputs.plan }}
+        if: ${{ github.event.inputs.plan }} == plan
+        continue-on-error: false
        
       - name: Save Plan Output
         id: save_plan_output
@@ -90,7 +92,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           
       - name: Notify
-        if: ${{ github.event.inputs.apply }}
+        if: ${{ github.event.inputs.apply }} == apply
         run: |
           echo "Notifying of ${{ github.event.inputs.apply }} "
           
@@ -101,7 +103,7 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ${{ env.ROOT_PATH }}
-        if: ${{ github.event.inputs.apply }}
+        if: ${{ github.event.inputs.apply }} == apply
         
       - name: Push Changes
         uses: ad-m/github-push-action@master
