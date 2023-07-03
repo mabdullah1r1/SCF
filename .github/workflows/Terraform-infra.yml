@@ -3,14 +3,12 @@ name: 'terraform-deploy'
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      deployment:
         description: 'Stages'
         required: true
         default: ''
-        type: choice
-        options:
-          - plan
-          - apply
+       
+
       apply:
         description: 'Apply'
         required: true
@@ -25,7 +23,7 @@ defaults:
     shell: bash
 
 env: 
-  ROOT_PATH: '${{github.workspace}}/src/deployment001/terraform'
+  ROOT_PATH: '${{github.workspace}}/src/deployment${{github.event.input.deployment}}/terraform'
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
