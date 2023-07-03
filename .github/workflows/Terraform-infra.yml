@@ -102,19 +102,16 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
+          
+      - name: Notify
+        if: ${{ github.event.inputs.notify }}
+        run: |
+          echo "Notifying of ${{ github.event.inputs.environment }} "
+          
+        
       - name: Terraform Init
         run: terraform init
-        working-directory: ${{ env.ROOT_PATH }}
-        
-      - name: check manauly?
-        run: |
-          if [[ "${{ github.event.inputs.stages.apply }}" == "apply" ]]; then
-          terraform apply -auto-approve
-          else
-          echo "Skipping Terraform apply due to tf_destroy=true"
-          fi
-        working-directory: ${{ env.ROOT_PATH }}           
+        working-directory: ${{ env.ROOT_PATH }}     
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
