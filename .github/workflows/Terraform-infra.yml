@@ -23,7 +23,7 @@ defaults:
     shell: bash
 
 env: 
-  ROOT_PATH: '${{github.workspace}}/src/deployment${{ github.on.workflow_dispatch.event.input.deployment }}/terraform'
+  ROOT_PATH: '${{github.workspace}}/src/deployment${{ github.event.input.deployment }}/terraform'
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
@@ -63,14 +63,14 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          # Add deployment steps here based on the input parameters
+          
           if [[ $PLAN == true ]]; then
             echo "Deploying the terraform to $PLAN environment..."
             terraform plan
           else
             echo "Skipping application deployment..."
           fi
-        #run: terraform plan 
+        
         working-directory: ${{ env.ROOT_PATH }}
         
         continue-on-error: false
@@ -114,9 +114,18 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}     
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: ${{ env.ROOT_PATH }}
-        if: ${{ github.inputs.apply }} == apply
+      
+        run: |
+          
+          if [[ $APPLY == true ]]; then
+            echo "Deploying the terraform to $APPLY environment..."
+            terraform apply -auto-approve
+          else
+            echo "Skipping application deployment..."
+          fi
+     
+           working-directory: ${{ env.ROOT_PATH }}
+    
         
       - name: Push Changes
         uses: ad-m/github-push-action@master
