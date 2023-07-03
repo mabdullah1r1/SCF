@@ -1,9 +1,0 @@
-resource "null_resource" "example" {
-  # Arbitrary name for the null_resource instance
-  name = "example"
-
-  # Local-exec provisioner to execute a command
-  provisioner "local-exec" {
-    command = "echo 'Hello, Terraform!05'"
-  }
-}
