@@ -1,8 +1,7 @@
 name: 'terraform-deploy'
 
 on:
-
-  workflow_dispatch: #this attribute will enable the manual run to the pipeline
+  workflow_dispatch:
     inputs:
       environment:
         description: 'Stages'
@@ -12,7 +11,6 @@ on:
         options:
           - plan
           - apply
-        
       apply:
         description: 'Apply'
         required: true
@@ -22,21 +20,16 @@ on:
         required: true
         type: boolean
 
-# Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
 defaults:
   run:
     shell: bash
+
 env: 
   ROOT_PATH: '${{github.workspace}}/src/deployment/terraform'
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
   ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
- # TF_VAR_agent_client_id: ${{ secrets.TF_VAR_agent_client_id }}
- # TF_VAR_agent_client_secret: ${{ secrets.TF_VAR_agent_client_secret }}
- # TF_VAR_subscription_id: ${{ secrets.TF_VAR_subscription_id }}
- # TF_VAR_tenant_id: ${{ secrets.TF_VAR_tenant_id }}
- # STAGE_NAME: production
 
 jobs:
   terraform_deploy:
@@ -44,55 +37,48 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Setup terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
         
-    - name: terraform format
-      id: fmt
-      run: terraform fmt -check
-      working-directory: ${{ env.ROOT_PATH }}
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        working-directory: ${{ env.ROOT_PATH }}
          
-    - name: terraform init
-      run: terraform init
-      working-directory: ${{ env.ROOT_PATH }}
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
 
-    - name: terraform Plan
-      run: terraform plan 
-      working-directory: ${{ env.ROOT_PATH }}
-      if: github.event.inputs.plan
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan 
+        working-directory: ${{ env.ROOT_PATH }}
+        if: ${{ github.event.inputs.plan }}
        
-    - name: Save State
-      run: echo "::save-state name=plan_output::${{ steps.plan.outputs.stdout }}"
-    - name: Set Output
-      run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"      
-
-    - uses: actions/upload-artifact@v3
-      with:
-        name: my-artifact
-        path: ${{ env.ROOT_PATH }}
+      - name: Save Plan Output
+        id: save_plan_output
+        run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"
         
-    - uses: actions/download-artifact@v3
-      with:
-        name: my-artifact
-    
-    - name: Display structure of downloaded files
-      run: ls -R
-      working-directory: ${{ env.ROOT_PATH }}
-      
-   
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: ${{ env.ROOT_PATH }}
+        
+      - name: Display Structure of Downloaded Files
+        run: ls -R
+        working-directory: ${{ env.ROOT_PATH }}
   
-      
   terraform_apply:
     name: 'Terraform Apply'
     needs: [terraform_deploy]
     environment: production
     runs-on: ubuntu-latest
-
 
     steps:
       - name: Checkout
@@ -108,7 +94,6 @@ jobs:
         run: |
           echo "Notifying of ${{ github.event.inputs.apply }} "
           
-        
       - name: Terraform Init
         run: terraform init
         working-directory: ${{ env.ROOT_PATH }}     
@@ -116,27 +101,22 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ${{ env.ROOT_PATH }}
-        if: github.event.inputs.apply
+        if: ${{ github.event.inputs.apply }}
         
-      - name: Push changes
+      - name: Push Changes
         uses: ad-m/github-push-action@master
         with:
-         github_token: ${{ secrets.MY_GITHUB_TOKEN }}
-         branch: ${{ github.ref }}
-         ref: ${{ github.event.pull_request.head.ref }}
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
         
-      - name: generate TF Docs
+      - name: Generate TF Docs
         uses: terraform-docs/gh-actions@v1.0.0
         with:
-         find-dir: ${{ env.ROOT_PATH }}
-         output-file: READMESS.md
-         output-method: inject
-         git-push: "true"        
-        
-        
-        
-        
-        
+          find-dir: ${{ env.ROOT_PATH }}
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
     
 #    - name: Terraform Apply
 #      #needs: [terraform_plan]
