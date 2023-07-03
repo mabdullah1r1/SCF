@@ -126,7 +126,7 @@ jobs:
           if [[ $APPLY == true ]]; then
             echo "Deploying the terraform to $APPLY environment..."
             cd ${{ env.ROOT_PATH }}
-            working-directory:  ${{ github.workspace }}/src/deployment/${{ github.event.inputs.deployment }}/terraform
+            working-directory:   ${{ env.ROOT_PATH }} 
             terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
             
           else
