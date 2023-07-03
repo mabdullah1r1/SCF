@@ -142,6 +142,15 @@ jobs:
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           branch: ${{ github.ref }}
           ref: ${{ github.event.pull_request.head.ref }}
+          
+      - name: Install Git LFS
+        run: |
+         sudo apt update
+         sudo apt install git-lfs
+         git lfs install
+         git lfs version
+
+        
         
       - name: Generate TF Docs
         uses: terraform-docs/gh-actions@v1.0.0
