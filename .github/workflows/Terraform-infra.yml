@@ -7,7 +7,7 @@ on:
       environment:
         description: 'Stages'
         required: true
-        default: 'apply'
+        default: ''
         type: choice
         options:
           - plan
