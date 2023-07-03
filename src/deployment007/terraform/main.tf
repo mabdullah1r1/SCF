@@ -15,6 +15,6 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "example" {
-  name     = "github-rg-0008za"
+  name     = "github-rg-0008zabb"
   location = "West Europe"
 }
