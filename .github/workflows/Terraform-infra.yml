@@ -23,7 +23,7 @@ defaults:
     shell: bash
 
 env: 
-  ROOT_PATH: '${{github.workspace}}/src/deployment${{github.event.input.deployment}}/terraform'
+  ROOT_PATH: '${{github.workspace}}/src/deployment${{ input.deployment }}/terraform'
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
@@ -57,7 +57,7 @@ jobs:
         id: plan
         run: terraform plan 
         working-directory: ${{ env.ROOT_PATH }}
-        if: ${{ github.event.inputs.plan }} == plan
+        if: ${{ .inputs.plan }} == plan
         continue-on-error: false
        
       - name: Save Plan Output
@@ -90,9 +90,9 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           
       - name: Notify
-        if: ${{ github.event.inputs.apply }} == apply
+        if: ${{ inputs.apply }} == apply
         run: |
-          echo "Notifying of ${{ github.event.inputs.apply }} "
+          echo "Notifying of ${{ inputs.apply }} "
           
       - name: Terraform Init
         run: terraform init
@@ -101,7 +101,7 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ${{ env.ROOT_PATH }}
-        if: ${{ github.event.inputs.apply }} == apply
+        if: ${{ inputs.apply }} == apply
         
       - name: Push Changes
         uses: ad-m/github-push-action@master
