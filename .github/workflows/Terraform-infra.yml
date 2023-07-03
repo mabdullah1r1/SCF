@@ -4,14 +4,19 @@ on:
 
   workflow_dispatch: #this attribute will enable the manual run to the pipeline
     inputs:
-       stages:
-          description: 'choose your stages'
-          default: 'apply'
-          type: choice
-          options:
-            - plan
-            - apply
-          required: true  
+      environment:
+        description: 'Stages'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - plan
+          - apply
+        
+      notify:
+        description: 'apply'
+        required: true
+        type: boolean
 
 # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
 defaults:
@@ -47,35 +52,17 @@ jobs:
       id: fmt
       run: terraform fmt -check
       working-directory: ${{ env.ROOT_PATH }}
-      
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.MY_GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
-        ref: ${{ github.event.pull_request.head.ref }}
-        
-    - name: generate TF Docs
-      uses: terraform-docs/gh-actions@v1.0.0
-      with:
-         find-dir: ${{ env.ROOT_PATH }}
-         output-file: READMESS.md
-         output-method: inject
-         git-push: "true"
-      
+         
     - name: terraform init
       run: terraform init
       working-directory: ${{ env.ROOT_PATH }}
 
     - name: terraform Plan
       run: terraform plan 
-      working-directory: ${{ env.ROOT_PATH }}
- 
-       
+      working-directory: ${{ env.ROOT_PATH }}    
        
     - name: Save State
       run: echo "::save-state name=plan_output::${{ steps.plan.outputs.stdout }}"
-
     - name: Set Output
       run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"      
 
@@ -128,7 +115,20 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ${{ env.ROOT_PATH }}
         
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+         github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+         branch: ${{ github.ref }}
+         ref: ${{ github.event.pull_request.head.ref }}
         
+      - name: generate TF Docs
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+         find-dir: ${{ env.ROOT_PATH }}
+         output-file: READMESS.md
+         output-method: inject
+         git-push: "true"        
         
         
         
