@@ -120,7 +120,7 @@ jobs:
           
           if [[ $APPLY == true ]]; then
             echo "Deploying the terraform to $APPLY environment..."
-            terraform apply -auto-approve tfplan.out
+            terraform apply -auto-approve 
             working-directory:  ${{ env.ROOT_PATH }}
           else
             echo "Skipping application deployment..."
