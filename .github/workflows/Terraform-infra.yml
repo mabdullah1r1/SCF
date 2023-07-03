@@ -13,8 +13,12 @@ on:
           - plan
           - apply
         
-      notify:
-        description: 'apply'
+      apply:
+        description: 'Apply'
+        required: true
+        type: boolean
+      plan:
+        description: 'Plan'
         required: true
         type: boolean
 
@@ -59,7 +63,8 @@ jobs:
 
     - name: terraform Plan
       run: terraform plan 
-      working-directory: ${{ env.ROOT_PATH }}    
+      working-directory: ${{ env.ROOT_PATH }}
+      if: github.event.inputs.plan
        
     - name: Save State
       run: echo "::save-state name=plan_output::${{ steps.plan.outputs.stdout }}"
@@ -114,6 +119,7 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ${{ env.ROOT_PATH }}
+        if: github.event.inputs.apply
         
       - name: Push changes
         uses: ad-m/github-push-action@master
