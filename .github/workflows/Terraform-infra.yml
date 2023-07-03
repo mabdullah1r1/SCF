@@ -104,9 +104,9 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           
       - name: Notify
-        if: ${{ github.event.inputs.notify }}
+        if: ${{ github.event.inputs.apply }}
         run: |
-          echo "Notifying of ${{ github.event.inputs.environment }} "
+          echo "Notifying of ${{ github.event.inputs.apply }} "
           
         
       - name: Terraform Init
