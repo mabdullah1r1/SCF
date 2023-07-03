@@ -100,17 +100,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Set Environment Variables
+        run: |
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          
-      - name: Notify
-        if: ${{ github.inputs.apply }} == apply
-        run: |
-          echo "Notifying of ${{ github.inputs.apply }} "
-          
+                   
       - name: Terraform Init
         run: terraform init
         working-directory: ${{ env.ROOT_PATH }}     
