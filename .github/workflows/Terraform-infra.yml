@@ -28,6 +28,11 @@ env:
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
   ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+  STORAGE_ACCOUNT_NAME: ${{}}
+  STORAGE_CONTAINER_NAME: ${{deployment${{ github.event.inputs.deployment }}}}
+  STATE_FILE_NAME: ${{}}
+  STORAGE_ACCOUNT_ACCESS_KEY: ${{}}
+  
 
 jobs:
   terraform_deploy:
@@ -120,7 +125,7 @@ jobs:
           
           if [[ $APPLY == true ]]; then
             echo "Deploying the terraform to $APPLY environment..."
-            terraform apply -auto-approve 
+            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
             working-directory:  ${{ env.ROOT_PATH }}
           else
             echo "Skipping application deployment..."
