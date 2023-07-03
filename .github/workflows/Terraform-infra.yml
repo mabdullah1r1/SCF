@@ -23,7 +23,7 @@ defaults:
     shell: bash
 
 env: 
-  ROOT_PATH: '${{github.workspace}}/src/deployment${{github.on.workflow_dispatch.input.deployment}}/terraform'
+  ROOT_PATH: '${{github.workspace}}/src/deployment${{ github.on.workflow_dispatch.event.input.deployment }}/terraform'
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
@@ -37,6 +37,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Set Environment Variables
+        run: |
+          echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV
+          echo "PLAN=${{ github.event.inputs.plan }}" >> $GITHUB_ENV
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+ 
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -55,9 +62,17 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan 
+        run: |
+          # Add deployment steps here based on the input parameters
+          if [[ $PLAN == true ]]; then
+            echo "Deploying the terraform to $PLAN environment..."
+            terraform plan
+          else
+            echo "Skipping application deployment..."
+          fi
+        #run: terraform plan 
         working-directory: ${{ env.ROOT_PATH }}
-        if: ${{ github.inputs.plan }} == plan
+        
         continue-on-error: false
        
       - name: Save Plan Output
