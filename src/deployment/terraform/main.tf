@@ -14,7 +14,16 @@ provider "azurerm" {
   features {}
 }
 
+resource "random_pet" "rg_name" {
+  length    = 2
+  separator = "-"
+}
+
 resource "azurerm_resource_group" "example" {
-  name     = "github-rg01-0001"
-  location = "West Europe"
+  name     = random_pet.rg_name.id
+  location = "eastus2"
+}
+
+output "resource_group_name" {
+  value = azurerm_resource_group.example.name
 }
