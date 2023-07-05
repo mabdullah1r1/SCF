@@ -12,15 +12,7 @@ jobs:
     - name: Render terraform docs inside the README.md and push changes back to PR branch
       uses: terraform-docs/gh-actions@v1.0.0
       with:
-        find-dir: |
-            examples/
-            SCF/
-            src/
-            terraform/
-            src/deployment/terraform/
-            main.tf/
-            src/deployment/terraform/main.tf
-            '${{ github.workspace }}/src/deployment001/terraform'
+        find-dir: src/deployment/terraform/main.tf
            
             
         output-file: README.md
