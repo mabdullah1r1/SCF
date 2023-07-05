@@ -20,8 +20,8 @@ jobs:
             src/deployment/terraform/
             main/
             src/deployment/terraform/main.tf
-            '${{ github.workspace }}/src'
-            
+            '${{ github.workspace }}/src/deployment001/terraform'
+           
             
         output-file: README.md
         output-method: inject
