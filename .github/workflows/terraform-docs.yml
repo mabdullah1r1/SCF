@@ -20,6 +20,7 @@ jobs:
             src/deployment/terraform/
             main/
             src/deployment/terraform/main.tf
+            '${{ github.workspace }}/src'
             
             
         output-file: README.md
