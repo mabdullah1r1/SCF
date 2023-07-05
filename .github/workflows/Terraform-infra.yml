@@ -133,17 +133,7 @@ jobs:
           fi
           
         working-directory: ${{ env.ROOT_PATH }}
-        continue-on-error: false      
-    
-                  
-      - name: Install Git LFS
-        run: |
-         sudo apt update
-         sudo apt install git-lfs
-         git lfs install
-         git lfs version
-
-        
+        continue-on-error: false         
         
       - name: Generate TF Docs
         uses: terraform-docs/gh-actions@v1.0.0
@@ -151,23 +141,26 @@ jobs:
           find-dir: ${{ env.ROOT_PATH }}
           output-file: README.md
           output-method: inject
-          git lfs-push: true
-
-      - name: Push Changes
-        uses: ad-m/github-push-action@master
-        with:
+          git-push: true
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           branch: ${{ github.ref }}
           ref: ${{ github.event.pull_request.head.ref }}
           
 
-              
-
-
-
-
-
-
+ #     - name: Push Changes
+ #       uses: ad-m/github-push-action@master
+ #       with:
+ #         github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+ #         branch: ${{ github.ref }}
+ #         ref: ${{ github.event.pull_request.head.ref }}
+ 
+                   
+#      - name: Install Git LFS
+#        run: |
+#         sudo apt update
+#         sudo apt install git-lfs
+#         git lfs install
+#         git lfs version
 
 
 #    - name: Terraform Apply
