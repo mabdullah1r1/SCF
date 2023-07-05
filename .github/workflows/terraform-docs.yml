@@ -18,7 +18,7 @@ jobs:
             src/
             terraform/
             src/deployment/terraform/
-            main/
+            main.tf/
             src/deployment/terraform/main.tf
             '${{ github.workspace }}/src/deployment001/terraform'
            
