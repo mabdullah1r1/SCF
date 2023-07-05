@@ -92,9 +92,7 @@ jobs:
           name: my-artifact
           path: ${{ env.ROOT_PATH }}
         
-      - name: Display Structure of Downloaded Files
-        run: ls -R
-        working-directory: ${{ env.ROOT_PATH }}
+
   
   terraform_apply:
     name: 'Terraform Apply'
@@ -141,7 +139,8 @@ jobs:
           find-dir: ${{ env.ROOT_PATH }}
           output-file: README.md
           output-method: inject
-          git-push: true
+          git-push-acedeeksha1@gmail.com: true
+ 
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           branch: ${{ github.ref }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -162,6 +161,9 @@ jobs:
 #         git lfs install
 #         git lfs version
 
+#      - name: Display Structure of Downloaded Files
+#        run: ls -R
+#        working-directory: ${{ env.ROOT_PATH }}
 
 #    - name: Terraform Apply
 #      #needs: [terraform_plan]
