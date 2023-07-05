@@ -18,6 +18,7 @@ jobs:
             src/
             terraform/
             src/deployment/terraform/
+            main/
             
             
         output-file: README.md
