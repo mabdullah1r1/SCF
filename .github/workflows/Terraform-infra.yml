@@ -160,7 +160,7 @@ jobs:
           output-method: inject
           
           command: "sudo apt update ;; sudo apt install git-lfs ;; git lfs install ;; git lfs version"
-          git-push: "true"
+          git lfs-push: "true"
           
 
               
