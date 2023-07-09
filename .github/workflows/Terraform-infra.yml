@@ -99,7 +99,8 @@ jobs:
           find . -name "tfplan.out"
           git --version
           find . -name "terraform.tfstate"
-          cd ./src/deployment005 ls
+          cd ./src/deployment005 
+          ls
           cd ./src/deployment005 
         
         
