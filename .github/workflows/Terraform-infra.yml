@@ -91,6 +91,11 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: false
        
+      - name: Save State File to Azure Storage
+        run: |
+          echo "##vso[task.prependpath]/usr/local/bin"
+          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate" --type page --source ".tfplan.out"
+    
       - name: Save Plan
         run: echo "::set-output name=plan_path::tfplan.out"
        
@@ -104,11 +109,6 @@ jobs:
           name: my-artifact
           path: ${{ env.ROOT_PATH }}
           
-      - name: Save State File to Azure Storage
-        run: |
-          echo "##vso[task.prependpath]/usr/local/bin"
-          #az storage blob upload-batch --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --destination-container "${{ env.STORAGE_CONTAINER_NAME }}" --source ".terraform"
-          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate" --type page --source ".terraform/terraform.tfstate"
           
 #      - name: Upload State File
 #        uses: github-developer/upload-azure-blob@v2
