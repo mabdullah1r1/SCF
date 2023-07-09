@@ -95,7 +95,7 @@ jobs:
           path: ${{ env.ROOT_PATH }}
           
       - name: Upload State File
-        uses: azure/azure-storage-blob-upload@v1
+        uses: github-developer/upload-azure-blob@v1
         with:
           connection_string: ${{ env.STORAGE_CONTAINER_NAME }}
           storage_account_name: ${{ env.AZURE_STORAGE_NAME }}
