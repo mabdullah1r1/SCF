@@ -59,7 +59,7 @@ jobs:
           export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
           export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
           export ARM_BLOB_NAME="${{ env.ROOT_PATH }}"
-          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" 
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="blob_name=${ARM_BLOB_NAME}"
          # working-directory: ${{ env.ROOT_PATH }}
           
           
@@ -171,7 +171,7 @@ jobs:
         run: |
           echo "##vso[task.prependpath]/usr/local/bin"
           az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate" --overwrite --file "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform/terraform.tfstate"
-          az storage blob directory upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" -c "${{ env.STORAGE_CONTAINER_NAME }}" -s "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform" --destination "" --recursive
+          az storage blob directory upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" -c "${{ env.STORAGE_CONTAINER_NAME }}" -s "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform/" --destination "" --recursive
 
           
       - name: Generate TF Docs
