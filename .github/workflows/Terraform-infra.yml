@@ -90,7 +90,17 @@ jobs:
         
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: false
-       
+        
+      - name: checking Dir 
+        run: |
+          ls -lh 
+          ls -a
+          find . -name "tfstate"
+          find . -name "tfplan.out"
+
+          terraform version
+        
+        
       - name: Save State File to Azure Storage
         run: |
           echo "##vso[task.prependpath]/usr/local/bin"
