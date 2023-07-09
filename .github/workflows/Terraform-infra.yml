@@ -154,16 +154,7 @@ jobs:
           
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: false         
-        
-      - name: Upload State File
-        uses: azure/azure-storage-blob-upload@v1
-        with:
-          connection_string: ${{ env.STORAGE_CONTAINER_NAME }}
-          storage_account_name: ${{ env.AZURE_STORAGE_NAME }}
-          container_name: ${{ env.STORAGE_CONTAINER_NAME }}
-          state_file_name: ${{ env.STATE_FILE_NAME}}
-          access-key: ${{ env.STORAGE_ACCOUNT_ACCESS_KEY}}
-          
+    
           
       - name: Generate TF Docs
         uses: terraform-docs/gh-actions@v1.0.0
