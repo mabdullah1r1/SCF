@@ -39,7 +39,7 @@ env:
 jobs:
   terraform_deploy:
     name: 'terraform plan'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout
@@ -59,7 +59,7 @@ jobs:
           export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
           export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
           export ARM_BLOB_NAME="${{ env.ROOT_PATH }}"
-          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" 
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="blob_name=${ARM_BLOB_NAME}"
          # working-directory: ${{ env.ROOT_PATH }}
           
           
@@ -131,7 +131,7 @@ jobs:
     name: 'Terraform Apply'
     needs: [terraform_deploy]
     environment: production
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
