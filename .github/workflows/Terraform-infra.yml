@@ -28,10 +28,12 @@ env:
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
   ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
-  #STORAGE_ACCOUNT_NAME: ${{}}
-  STORAGE_CONTAINER_NAME: deployment${{ github.event.inputs.deployment }}.tfstate
-  #STATE_FILE_NAME: ${{}}
-  #STORAGE_ACCOUNT_ACCESS_KEY: ${{}}
+  STORAGE_ACCOUNT_NAME: ${{secrets.AZURE_STORAGE_NAME}}
+  STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
+  AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  STATE_FILE_NAME: ${{deployment${{ github.event.inputs.deployment }}.tfstate}}
+  STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
+  
   
 
 jobs:
@@ -91,6 +93,16 @@ jobs:
         with:
           name: my-artifact
           path: ${{ env.ROOT_PATH }}
+          
+      - name: Upload State File
+        uses: azure/azure-storage-blob-upload@v1
+        with:
+          connection_string: ${{ env.STORAGE_CONTAINER_NAME }}
+          storage_account_name: ${{ env.AZURE_STORAGE_NAME }}
+          container_name: ${{ env.STORAGE_CONTAINER_NAME }}
+          state_file_name: ${{ env.STATE_FILE_NAME}}
+          access-key: ${{ env.STORAGE_ACCOUNT_ACCESS_KEY}}
+          
         
 
   
@@ -133,6 +145,16 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: false         
         
+      - name: Upload State File
+        uses: azure/azure-storage-blob-upload@v1
+        with:
+          connection_string: ${{ env.STORAGE_CONTAINER_NAME }}
+          storage_account_name: ${{ env.AZURE_STORAGE_NAME }}
+          container_name: ${{ env.STORAGE_CONTAINER_NAME }}
+          state_file_name: ${{ env.STATE_FILE_NAME}}
+          access-key: ${{ env.STORAGE_ACCOUNT_ACCESS_KEY}}
+          
+          
       - name: Generate TF Docs
         uses: terraform-docs/gh-actions@v1.0.0
         with:
