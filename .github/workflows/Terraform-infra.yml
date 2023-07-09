@@ -103,7 +103,7 @@ jobs:
       - name: Save State File to Azure Storage
         run: |
           echo "##vso[task.prependpath]/usr/local/bin"
-          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate"  --file "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform"
+          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate"  --file "./src/deployment${{ github.event.inputs.deployment }}/terraform"
     
       - name: Save Plan
         run: echo "::set-output name=plan_path::tfplan.out"
@@ -174,7 +174,7 @@ jobs:
       - name: Save State File to Azure Storage
         run: |
           echo "##vso[task.prependpath]/usr/local/bin"
-          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate"  --file "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform"
+          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate"  --file "./src/deployment${{ github.event.inputs.deployment }}/terraform"
 
           
       - name: Generate TF Docs
