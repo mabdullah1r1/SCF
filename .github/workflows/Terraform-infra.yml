@@ -104,6 +104,11 @@ jobs:
           name: my-artifact
           path: ${{ env.ROOT_PATH }}
           
+      - name: Save State File to Azure Storage
+        run: |
+          echo "##vso[task.prependpath]/usr/local/bin"
+          az storage blob upload-batch --account-name "${{ env.STORAGE_CONTAINER_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --destination-container "${{ env.STORAGE_CONTAINER_NAME }}" --source ".terraform" --destination-path "https://testing201.blob.core.windows.net/terraform"
+          
 #      - name: Upload State File
 #        uses: github-developer/upload-azure-blob@v2
 #        with:
