@@ -93,13 +93,12 @@ jobs:
         
       - name: checking Dir 
         run: |
-          ls -lh 
-          ls -a
+          ls
           find . -name "tfstate"
-          find . -name "tfplan.out"
-          find . -name "terraform.tfstate"
-
           terraform version
+          find . -name "tfplan.out"
+          git --version
+          find . -name "terraform.tfstate"
         
         
       - name: Save State File to Azure Storage
