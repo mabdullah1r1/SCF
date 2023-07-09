@@ -107,7 +107,7 @@ jobs:
       - name: Save State File to Azure Storage
         run: |
           echo "##vso[task.prependpath]/usr/local/bin"
-          az storage blob upload-batch --account-name "${{ env.STORAGE_CONTAINER_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --destination-container "${{ env.STORAGE_CONTAINER_NAME }}" --source ".terraform" --destination-path "terraform"
+          az storage blob upload-batch --account-name "${{ env.STORAGE_CONTAINER_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --destination-container "${{ env.STORAGE_CONTAINER_NAME }}" --source ".terraform" --destination-path "${{ env.STORAGE_CONTAINER_NAME }}"
           
 #      - name: Upload State File
 #        uses: github-developer/upload-azure-blob@v2
