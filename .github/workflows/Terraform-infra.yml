@@ -97,6 +97,7 @@ jobs:
           ls -a
           find . -name "tfstate"
           find . -name "tfplan.out"
+          find . -name "terraform.tfstate"
 
           terraform version
         
