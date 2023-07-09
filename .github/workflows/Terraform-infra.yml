@@ -95,10 +95,6 @@ jobs:
         run: |
           ls -d */
 
-          find . -name "tfstate"
-          terraform version
-          find . -name "tfplan.out"
-          git --version
           find . -name "terraform.tfstate"
 
         
