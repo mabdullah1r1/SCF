@@ -1,4 +1,4 @@
-name: 'terraform-deploy'
+name: '${{ env.ROOT_PATH }}'
 
 on:
   workflow_dispatch:
