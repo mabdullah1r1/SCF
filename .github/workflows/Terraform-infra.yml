@@ -1,4 +1,4 @@
-
+name: 'terraform-deploy'
 
 on:
   workflow_dispatch:
@@ -115,7 +115,7 @@ jobs:
           path: ${{ env.ROOT_PATH }}
           
 
-name: ${{ github.event.deployment.environment }}
+
 
 
 
