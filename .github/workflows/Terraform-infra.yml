@@ -1,4 +1,4 @@
-name: 'Terraform-Deploy'
+name: 'deployment${{ github.event.inputs.deployment }}'
 
 on:
   workflow_dispatch:
