@@ -1,5 +1,5 @@
 on:
-  workflow_dispatch:
+  
   deployment_status:
     types:
       - created
