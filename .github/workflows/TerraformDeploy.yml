@@ -153,17 +153,22 @@ jobs:
           find-dir: ${{ env.ROOT_PATH }}
           output-file: README.md
           output-method: inject
-          #ref: ${{ github.event.pull_request.head.ref }}
-          #git-push: true
+          ref: ${{ github.event.pull_request.head.ref }}
+          git-push: true
           #git-pull: true
-          
- 
+           
           #github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           #branch: ${{ github.ref }}
           
           #ref: ${{ github.event.pull_request.head.ref }}
           
-
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "Your Name"
+          git config --global user.email "your-email@example.com"
+          git add .
+          git commit -m "Update documentation"
+          git push
 
 
           
