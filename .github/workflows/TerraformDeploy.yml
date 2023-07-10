@@ -1,0 +1,254 @@
+name: 'Terraform-Deploy'
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment:
+        description: 'deployment'
+        required: true
+        default: ''
+
+
+      apply:
+        description: 'Apply'
+        required: true
+        type: boolean
+      plan:
+        description: 'Plan'
+        required: true
+        type: boolean
+
+defaults:
+  run:
+    shell: bash
+
+env: 
+  ROOT_PATH: '${{ github.workspace }}/src/deployment${{ github.event.inputs.deployment }}/terraform'
+  ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+  ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+  STORAGE_ACCOUNT_NAME: ${{secrets.AZURE_STORAGE_NAME}}
+  STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
+  AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  STATE_FILE_NAME: deployment${{ github.event.inputs.deployment }}.tfstate
+  STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
+  
+  
+
+jobs:
+  Terraform_Init:
+    name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set Environment Variables
+        run: |
+          echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV
+          echo "PLAN=${{ github.event.inputs.plan }}" >> $GITHUB_ENV
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+ 
+      - name: Configure AzureRM Backend
+        run: |
+          export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
+          export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
+          export ARM_RESOURCE_GROUP_NAME="same0099"
+          export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
+          export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
+          export ARM_BLOB_NAME="${{ env.ROOT_PATH }}"
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="blob_name=${ARM_BLOB_NAME}"
+         # working-directory: ${{ env.ROOT_PATH }}
+          
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        
+      - name: Terraform Format 
+        id: fmt
+        run: terraform fmt -check
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: false
+         
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          
+          if [[ $PLAN == true ]]; then
+            echo "Deploying the terraform to $PLAN environment..."
+            terraform plan -out=tfplan.out
+          else
+            echo "Skipping application deployment..."
+          fi
+        
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: false
+        
+ 
+      - name: Save State File to Azure Storage
+        run: |
+          echo "##vso[task.prependpath]/usr/local/bin"
+          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate" --overwrite --file "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform/terraform.tfstate"
+          az storage blob directory upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" -c "${{ env.STORAGE_CONTAINER_NAME }}" -s "./src/deployment${{ github.event.inputs.deployment }}/terraform/terraform/.terraform" --destination "" --recursive
+          
+
+  Terraform_Apply:
+    name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
+    needs: [Terraform_Init]
+    environment: production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set Environment Variables
+        run: |
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+                   
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}     
+
+      - name: Terraform Apply
+      
+        run: |
+          
+          if [[ $APPLY == true ]]; then
+            echo "Deploying the terraform to $APPLY environment..."
+            cd ${{ env.ROOT_PATH }}
+            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
+                      
+          else
+             echo "Skipping application deployment..."
+          fi
+          
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: false     
+        
+        
+      - name: Save State File to Azure Storage
+        run: |
+          echo "##vso[task.prependpath]/usr/local/bin"
+          az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate" --overwrite --file "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform/terraform.tfstate"
+          az storage blob directory upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" -c "${{ env.STORAGE_CONTAINER_NAME }}" -s "./src/deployment${{ github.event.inputs.deployment }}" --destination "" --recursive
+
+          
+      - name: Generate TF Docs
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          find-dir: ${{ env.ROOT_PATH }}
+          output-file: README.md
+          output-method: inject
+          git-push-acedeeksha1@gmail.com: true
+ 
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          
+
+
+
+          
+
+ #     - name: Push Changes
+ #       uses: ad-m/github-push-action@master
+ #       with:
+ #         github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+ #         branch: ${{ github.ref }}
+ #         ref: ${{ github.event.pull_request.head.ref }}
+ 
+                   
+#      - name: Install Git LFS
+#        run: |
+#         sudo apt update
+#         sudo apt install git-lfs
+#         git lfs install
+#         git lfs version
+
+#      - name: Display Structure of Downloaded Files
+#        run: ls -R
+#        working-directory: ${{ env.ROOT_PATH }}
+
+#    - name: Terraform Apply
+#      #needs: [terraform_plan]
+#      #environment: production
+#      run: |
+#        if [[ "${{ github.event.inputs.stages }}" == "apply" ]]; then
+#          terraform apply -auto-approve
+#        else
+#          echo "Skipping Terraform apply due to tf_destroy=true"
+#       fi
+#      working-directory: ${{ env.ROOT_PATH }}
+
+  
+  #terraform_apply:
+  #  name: 'terraform apply'
+  #  needs: [terraform_plan]
+  #  runs-on: ubuntu-latest
+  #  environment: production
+    
+  #  defaults:
+  #    run:
+  #      shell: bash
+  
+
+  #  steps:
+  #  - name: Checkout
+  #    uses: actions/checkout@v2
+
+  #  - name: Setup terraform
+  #    uses: hashicorp/setup-terraform@v1
+  #    with: 
+  #      cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+ 
+  #  - name: terraform Init
+  #    run: terraform init
+  #    working-directory: ${{ env.ROOT_PATH }}
+
+  #  - name: terraform Init
+  #    run: echo 'var -> ${{inputs.tf_destroy}}'
+  #    working-directory: ${{ env.ROOT_PATH }}
+
+  #    #github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #  - name: terraform Apply
+  #    run: terraform apply -auto-approve
+  #    if: ${{inputs.tf_destroy}} == false
+  #    working-directory: ${{ env.ROOT_PATH }}
+
+    # - name: terraform destroy
+    #   run: terraform destroy -auto-approve
+    #   if: ${{inputs.tf_destroy}} == true
+    #   working-directory: ${{ env.ROOT_PATH }}
+
+
+          
+          
+#      - name: Save Plan
+#        run: echo "::set-output name=plan_path::tfplan.out"
+       
+#      - name: Save Plan Output
+#        id: save_plan_output
+#        run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"
+        
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: my-artifact
+#          path: ${{ env.ROOT_PATH }}
+
+
+  
