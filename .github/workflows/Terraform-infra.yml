@@ -1,5 +1,4 @@
 
-
 on:
   workflow_dispatch:
     inputs:
@@ -8,9 +7,6 @@ on:
         required: true
         default: ''
 
-      deployment:
-         types:
-         - created 
 
       apply:
         description: 'Apply'
