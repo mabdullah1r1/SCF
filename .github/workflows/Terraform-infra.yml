@@ -38,7 +38,7 @@ env:
 
 jobs:
   terraform_deploy:
-    name: 'terraform plan ${{ env.ROOT_PATH }}'
+    name: 'terraform plan' deployment${{ github.event.inputs.deployment }}
     runs-on: ubuntu-latest
     
     steps:
@@ -117,7 +117,7 @@ jobs:
 
   
   terraform_apply:
-    name: 'Terraform Apply - ${{ env.ROOT_PATH }}'
+    name: 'Terraform Apply'
     needs: [terraform_deploy]
     environment: production
     runs-on: ubuntu-latest
