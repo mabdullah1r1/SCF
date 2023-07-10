@@ -1,4 +1,4 @@
-name: 'terraform-deploy'
+name: ${{ format('{0}_{1}_ApplyChanges_{2}', github.ref, format('{0:yyyyMMdd}', github.event.head_commit.timestamp), ${{ github.event.inputs.applyChanges }}) }}
 
 on:
   workflow_dispatch:
