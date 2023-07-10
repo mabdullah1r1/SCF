@@ -1,3 +1,4 @@
+name: 'Terraform-Deploy'
 
 on:
   workflow_dispatch:
@@ -113,11 +114,6 @@ jobs:
           name: my-artifact
           path: ${{ env.ROOT_PATH }}
           
-
-name: Deploy to ${{ github.event.deployment.environment }}
-
-
-
  
           
 #      - name: Upload State File
