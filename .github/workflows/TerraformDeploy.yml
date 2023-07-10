@@ -153,9 +153,9 @@ jobs:
           find-dir: ${{ env.ROOT_PATH }}
           output-file: README.md
           output-method: inject
-          git-push-acedeeksha1@gmail.com: true
+          git-push: true
  
-          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+          #github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           branch: ${{ github.ref }}
           ref: ${{ github.event.pull_request.head.ref }}
           
