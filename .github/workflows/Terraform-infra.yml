@@ -38,7 +38,7 @@ env:
 
 jobs:
   terraform_deploy:
-    name: 'terraform plan'
+    name: 'terraform plan - ${{ env.ROOT_PATH }}'
     runs-on: ubuntu-latest
     
     steps:
@@ -68,7 +68,7 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
         
-      - name: Terraform Format
+      - name: Terraform Format 
         id: fmt
         run: terraform fmt -check
         working-directory: ${{ env.ROOT_PATH }}
@@ -101,35 +101,23 @@ jobs:
           
           
           
-      - name: Save Plan
-        run: echo "::set-output name=plan_path::tfplan.out"
+#      - name: Save Plan
+#        run: echo "::set-output name=plan_path::tfplan.out"
        
-      - name: Save Plan Output
-        id: save_plan_output
-        run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"
+#      - name: Save Plan Output
+#        id: save_plan_output
+#        run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"
         
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: my-artifact
-          path: ${{ env.ROOT_PATH }}
-          
- 
-          
-#      - name: Upload State File
-#        uses: github-developer/upload-azure-blob@v2
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v2
 #        with:
-#          connection_string: ${{ env.STORAGE_CONTAINER_NAME }}
-#          storage_account_name: ${{ env.AZURE_STORAGE_NAME }}
-#          container_name: ${{ env.STORAGE_CONTAINER_NAME }}
-#          state_file_name: ${{ env.STATE_FILE_NAME}}
-#          access-key: ${{ env.STORAGE_ACCOUNT_ACCESS_KEY}}
-          
-        
+#          name: my-artifact
+#          path: ${{ env.ROOT_PATH }}
+
 
   
   terraform_apply:
-    name: 'Terraform Apply'
+    name: 'Terraform Apply - ${{ env.ROOT_PATH }}'
     needs: [terraform_deploy]
     environment: production
     runs-on: ubuntu-latest
