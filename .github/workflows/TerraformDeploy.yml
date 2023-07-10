@@ -154,10 +154,11 @@ jobs:
           output-file: README.md
           output-method: inject
           git-pull: true
-          git-push: true
+          
  
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+          git-push: true
           ref: ${{ github.event.pull_request.head.ref }}
           
 
