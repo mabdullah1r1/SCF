@@ -39,7 +39,7 @@ env:
 jobs:
   terraform_deploy:
     name: 'terraform plan'
-    runs-on: Ubuntu
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout
@@ -131,7 +131,7 @@ jobs:
     name: 'Terraform Apply'
     needs: [terraform_deploy]
     environment: production
-    runs-on: Ubuntu
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
