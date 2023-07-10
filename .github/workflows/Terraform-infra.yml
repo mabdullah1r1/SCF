@@ -114,7 +114,13 @@ jobs:
           name: my-artifact
           path: ${{ env.ROOT_PATH }}
           
-          
+
+name: Deploy on ${{ format('{0:yyyy-MM-dd}')}}
+
+
+
+
+
 #      - name: Upload State File
 #        uses: github-developer/upload-azure-blob@v2
 #        with:
