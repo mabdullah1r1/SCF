@@ -150,15 +150,16 @@ jobs:
       - name: Generate TF Docs
         uses: terraform-docs/gh-actions@v1.0.0
         with:
-          find-dir: SCF\
+          find-dir: ${{ env.ROOT_PATH }}/terraform
           output-file: README.md
           output-method: inject
+          git-push: true
           git-pull: true
           
  
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-          git-push: true
+          
           ref: ${{ github.event.pull_request.head.ref }}
           
 
