@@ -38,7 +38,7 @@ env:
 
 jobs:
   terraform_deploy:
-    name: 'terraform plan' deployment${{ github.event.inputs.deployment }}
+    name: 'deployment${{ github.event.inputs.deployment }}' 
     runs-on: ubuntu-latest
     
     steps:
