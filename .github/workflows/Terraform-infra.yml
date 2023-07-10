@@ -38,7 +38,7 @@ env:
 
 jobs:
   terraform_deploy:
-    name: 'terraform plan - ${{ env.ROOT_PATH }}'
+    name: 'terraform plan ${{ env.ROOT_PATH }}'
     runs-on: ubuntu-latest
     
     steps:
