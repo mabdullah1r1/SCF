@@ -1,4 +1,4 @@
-name: 'terraform-deploy'
+
 
 on:
   workflow_dispatch:
@@ -7,7 +7,10 @@ on:
         description: 'deployment'
         required: true
         default: ''
-       
+
+      deployment:
+         types:
+         - created 
 
       apply:
         description: 'Apply'
@@ -115,7 +118,7 @@ jobs:
           path: ${{ env.ROOT_PATH }}
           
 
-
+name: Deploy to ${{ github.event.deployment.environment }}
 
 
 
