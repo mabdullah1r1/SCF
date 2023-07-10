@@ -1,4 +1,4 @@
-name: 'terraform-deploy'
+name: ${{ env.ROOT_PATH }}
 
 on:
   workflow_dispatch:
@@ -39,7 +39,7 @@ env:
 jobs:
   terraform_deploy:
     name: 'terraform plan'
-    runs-on: selfhosted
+    runs-on: ubuntu
     
     steps:
       - name: Checkout
@@ -131,7 +131,7 @@ jobs:
     name: 'Terraform Apply'
     needs: [terraform_deploy]
     environment: production
-    runs-on: selfhosted
+    runs-on: ubuntu
 
     steps:
       - name: Checkout
