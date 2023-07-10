@@ -1,0 +1,16 @@
+on:
+  deployment:
+    types:
+      - created
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Add more steps as needed
+
+name: Deploy to ${{ github.event.deployment.environment }}
