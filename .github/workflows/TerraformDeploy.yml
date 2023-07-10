@@ -150,7 +150,7 @@ jobs:
         with:
           path: '${{ env.ROOT_PATH }}'  # The working directory PSDocs is run from.
           outputPath: '${{ env.ROOT_PATH }}'     # The path to write documentation to.
-          continue-on-error: true   
+          continue-on-error: false   
           
       - name: Generate TF Docs
         uses: terraform-docs/gh-actions@v1.0.0
