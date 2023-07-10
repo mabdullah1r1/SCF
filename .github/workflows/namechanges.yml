@@ -1,23 +1,21 @@
 on:
-
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  deployment_status:
+    types:
+      - created
 
 jobs:
-  deploy:
+  workflow:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set Deployment Name
-        id: set-deployment-name
-        run: |
-          # Set your deployment name logic here
-          echo "::set-output name=deployment_name::my-deployment"
-
-    outputs:
-      deployment_name: ${{ steps.set-deployment-name.outputs.deployment_name }}
+      - name: Update Workflow Run Name
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const deploymentName = '${{ needs.deployment.outputs.deployment_name }}';
+            github.actions.updateWorkflowRun({
+              run_id: context.runId,
+              name: deploymentName
+            });
