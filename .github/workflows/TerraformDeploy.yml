@@ -155,9 +155,9 @@ jobs:
           output-method: inject
           git-push: true
  
-          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          ref: ${{ github.event.pull_request.head.ref }}
+          #github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+          #branch: ${{ github.ref }}
+          #ref: ${{ github.event.pull_request.head.ref }}
           
 
 
