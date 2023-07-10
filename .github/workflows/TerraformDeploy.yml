@@ -154,8 +154,8 @@ jobs:
           output-file: README.md
           output-method: inject
           ref: ${{ github.event.pull_request.head.ref }}
-          git-push: true
-          git-pull: true
+          #git-push: true
+          #git-pull: true
           
  
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
