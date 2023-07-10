@@ -99,23 +99,7 @@ jobs:
           az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate" --overwrite --file "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform/terraform.tfstate"
           az storage blob directory upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" -c "${{ env.STORAGE_CONTAINER_NAME }}" -s "./src/deployment${{ github.event.inputs.deployment }}/terraform/terraform/.terraform" --destination "" --recursive
           
-          
-          
-#      - name: Save Plan
-#        run: echo "::set-output name=plan_path::tfplan.out"
-       
-#      - name: Save Plan Output
-#        id: save_plan_output
-#        run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"
-        
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: my-artifact
-#          path: ${{ env.ROOT_PATH }}
 
-
-  
   Terraform_Apply:
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
     needs: [terraform_deploy]
@@ -249,3 +233,22 @@ jobs:
     #   run: terraform destroy -auto-approve
     #   if: ${{inputs.tf_destroy}} == true
     #   working-directory: ${{ env.ROOT_PATH }}
+
+
+          
+          
+#      - name: Save Plan
+#        run: echo "::set-output name=plan_path::tfplan.out"
+       
+#      - name: Save Plan Output
+#        id: save_plan_output
+#        run: echo "::set-output name=plan_output::${{ steps.plan.outputs.stdout }}"
+        
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: my-artifact
+#          path: ${{ env.ROOT_PATH }}
+
+
+  
