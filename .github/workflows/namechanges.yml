@@ -1,9 +1,10 @@
 on:
-  deployment:
-    types:
-      - created
+
   workflow_dispatch:
-  
+  push:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,6 +13,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Add more steps as needed
+      - name: Set Deployment Name
+        id: set-deployment-name
+        run: |
+          # Set your deployment name logic here
+          echo "::set-output name=deployment_name::my-deployment"
 
-name: Deploy to ${{ github.event.deployment.environment }}
+    outputs:
+      deployment_name: ${{ steps.set-deployment-name.outputs.deployment_name }}
