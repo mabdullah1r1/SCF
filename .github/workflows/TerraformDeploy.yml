@@ -101,7 +101,7 @@ jobs:
           
 
   Terraform_Apply:
-    name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
+    name: 'TF Apply'
     needs: [Terraform_Init]
     environment: production
     runs-on: self-hosted
