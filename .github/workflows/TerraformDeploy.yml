@@ -161,7 +161,7 @@ jobs:
           git-push: true
          
            
-          #github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           #branch: ${{ github.ref }}
           #git-pull: true
           #ref: ${{ github.event.pull_request.head.ref }}
