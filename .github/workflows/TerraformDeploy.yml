@@ -98,7 +98,21 @@ jobs:
           echo "##vso[task.prependpath]/usr/local/bin"
           az storage blob upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" --type block --container-name "${{ env.STORAGE_CONTAINER_NAME }}" --name "deployment${{ github.event.inputs.deployment }}.tfstate" --overwrite --file "./src/deployment${{ github.event.inputs.deployment }}/terraform/.terraform/terraform.tfstate"
           az storage blob directory upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" -c "${{ env.STORAGE_CONTAINER_NAME }}" -s "./src/deployment${{ github.event.inputs.deployment }}" --destination "" --recursive
-          
+
+      
+      - name: Install Docker
+        run: |
+           apt-get update
+           apt-get -y install docker.io
+      
+      
+      
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+
+      - name: Pull Docker image
+        run: docker pull quay.io/terraform-docs/gh-actions:1.0.0    
 
   Terraform_Apply:
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
@@ -114,11 +128,7 @@ jobs:
         run: |
           echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
           
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v1
-        
-      - name: Pull Docker image
-        run: docker pull quay.io/terraform-docs/gh-actions:1.0.0
+
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
