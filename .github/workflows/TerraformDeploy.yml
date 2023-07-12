@@ -151,23 +151,15 @@ jobs:
       - uses: actions/checkout@v3
         with:
          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Render terraform docs inside the USAGE.md and push changes back to PR branch
-        uses: Dirrk/terraform-docs@v1.0.8
+        
+      - name: Generate TF Docs
+        uses: terraform-docs/gh-actions@v1.0.0
         with:
-         tf_docs_working_dir: ${{ env.ROOT_PATH }}
-         tf_docs_output_file: USAGE.md
-         tf_docs_output_method: inject
-         tf_docs_git_push: 'true'
-         
-#      - name: Generate TF Docs
-#        uses: terraform-docs/gh-actions@v1.0.0
-#        with:
-#          find-dir: ${{ env.ROOT_PATH }}
-#          output-file: README.md
-#          output-method: inject
+          find-dir: ${{ env.ROOT_PATH }}
+          output-file: README.md
+          output-method: inject
 #          #ref: ${{ github.event.pull_request.head.ref }}
-#          git-push: true
+          git-push: true
 #          git-pull: true
            
           #github_token: ${{ secrets.MY_GITHUB_TOKEN }}
