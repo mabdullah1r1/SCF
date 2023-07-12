@@ -39,7 +39,7 @@ env:
 jobs:
   Terraform_Init:
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
-    runs-on: self-hosted
+    runs-on: selfhosted
     
     steps:
       - name: Checkout
@@ -104,7 +104,7 @@ jobs:
     name: 'TF Apply'
     needs: [Terraform_Init]
     environment: production
-    runs-on: self-hosted
+    runs-on: selfhosted
 
     steps:
       - name: Checkout
