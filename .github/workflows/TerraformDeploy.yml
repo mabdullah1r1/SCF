@@ -150,15 +150,15 @@ jobs:
 #      - uses: actions/checkout@v3
 #        with:
 #         ref: ${{ github.event.pull_request.head.ref }}
-      - name: Generate TF Docs
-        uses: terraform-docs/gh-actions@v1.0.0
-        with:
-          find-dir: ${{ env.ROOT_PATH }}
-          output-file: README.md
-          output-method: inject
-          #ref: ${{ github.event.pull_request.head.ref }}
-          git-push: true
-          git-pull: true
+#      - name: Generate TF Docs
+#        uses: terraform-docs/gh-actions@v1.0.0
+#        with:
+#          find-dir: ${{ env.ROOT_PATH }}
+#          output-file: README.md
+#          output-method: inject
+#          #ref: ${{ github.event.pull_request.head.ref }}
+#          git-push: true
+#          git-pull: true
            
           #github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           #branch: ${{ github.ref }}
