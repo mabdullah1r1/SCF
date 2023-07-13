@@ -1,0 +1,7 @@
+volumes:
+- refs: data
+  disk_number: 2
+  drive_letter: E
+  drive_label: data
+crowdstrike:
+  cid: 39A8E6F75F1B4FC0B410A6A56D7B32A3-ED

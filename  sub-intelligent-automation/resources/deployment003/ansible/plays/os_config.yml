@@ -1,0 +1,18 @@
+---
+- hosts: all
+  vars:
+    ansible_user: "{{ ansibleuser }}"
+    ansible_password: "{{ ansiblepass }}"
+    ansible_become_user: "{{ ansibleuser }}"
+    StrictHostKeyChecking: no
+    ansible_connection: psrp
+    ansible_winrm_transport: credssp
+    ansible_winrm_server_cert_validation: ignore
+    ansible_psrp_protocol: http
+    ansible_psrp_reconnection_retries: 5
+    ansible_psrp_connection_timeout: 1800
+    ansible_psrp_operation_timeout: 1800
+    ansible_psrp_read_timeout: 1800
+  roles:
+    - crowdstrike
+    - windows_update
