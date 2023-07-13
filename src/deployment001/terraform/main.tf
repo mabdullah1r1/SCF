@@ -1,6 +1,6 @@
 terraform {
   backend "azurerm" {
-    path = "terraform"
+   
   }
   required_providers {
     azurerm = {
