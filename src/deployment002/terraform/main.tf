@@ -1,11 +1,11 @@
 terraform {
-  backend "local" {
-    path = "terraform"
+  backend "azurerm" {
+   
   }
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.0"
+      version = "=3.62.1"
     }
   }
 }
