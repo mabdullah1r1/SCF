@@ -9,14 +9,6 @@ on:
         default: ''
 
 
-      apply:
-        description: 'Apply'
-        required: true
-        type: boolean
-      plan:
-        description: 'Plan'
-        required: true
-        type: boolean
         
 
 defaults:
