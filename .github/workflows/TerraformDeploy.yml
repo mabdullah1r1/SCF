@@ -150,6 +150,7 @@ jobs:
 #          az storage blob directory upload --account-name "${{ env.AZURE_STORAGE_NAME }}" --account-key "${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}" -c "${{ env.STORAGE_CONTAINER_NAME }}" -s "./src/deployment${{ github.event.inputs.deployment }}/" --destination "" --recursive
 
 
+
 #      - uses: actions/checkout@v3
 #        with:
 #         ref: ${{ github.event.pull_request.head.ref }}
