@@ -33,7 +33,6 @@ env:
   AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   STATE_FILE_NAME: deployment${{ github.event.inputs.deployment }}.tfstate
   STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
-  AZURE_STORAGE_SAS_TOKEN: ${{secrets.AZURE_STORAGE_SAS_TOKEN}}
   
   
 
@@ -59,10 +58,8 @@ jobs:
           export ARM_RESOURCE_GROUP_NAME="same0099"
           export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
           export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
-          export ARM_SAS_TOKEN="${{env.AZURE_STORAGE_SAS_TOKEN}}"
-          export ARM_BLOB_KEY="deployment${{ github.event.inputs.deployment }}./.tfstate"
-
-          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="access_key=${ARM_ACCESS_KEY}" -backend-config="subscription_id=${ARM_SUBSCRIPTION_ID}" -backend-config="key=main.tf" -backend-config="sas_token=${ARM_SAS_TOKEN}"
+          export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}./.tfstate"
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="blob_name=${ARM_BLOB_NAME}"
          # working-directory: ${{ env.ROOT_PATH }}
           
           
@@ -75,19 +72,10 @@ jobs:
         id: fmt
         run: terraform fmt -check
         working-directory: ${{ env.ROOT_PATH }}
-        continue-on-error: true
+        continue-on-error: false
          
-      - name: Configure backend
-        run: |
-          terraform init -backend-config="storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" \
-                        -backend-config="container_name=${{ env.STORAGE_CONTAINER_NAME}}\
-                        -backend-config="key=deployment${{ github.event.inputs.deployment }}./.tfstate" \
-                        -backend-config="access_key=${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}
-
-
-
       - name: Terraform Init
-        run: terraform -chdir=${{ env.ROOT_PATH }} init -backend-config=storage_account_name=testing201  -backend-config=container_name=terraform -backend-config="key=deployment${{ github.event.inputs.deployment }}./.tfstate" -backend-config=resource_group_name=same0099 -backend-config=subscription_id=42586b98-9072-448a-a4b9-05671f6474ec -backend-config=tenant_id= 0f52c939-cd14-49e3-a54f-c10ff1be3394 -backend-config=client_id=e2360995-f6a6-42bb-a6bd-569dbbdcfb29 -backend-config=client_secret=95222feb-cb0b-4427-8e45-ea90a6dbc645 
+        run: terraform init
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Plan
