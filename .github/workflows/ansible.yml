@@ -1,0 +1,46 @@
+name: Deploy with Ansible
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment:
+        description: 'deployment'
+        required: true
+        default: ''
+
+
+      apply:
+        description: 'Apply'
+        required: true
+        type: boolean
+      plan:
+        description: 'Plan'
+        required: true
+        type: boolean
+        
+
+defaults:
+  run:
+    shell: bash 
+    
+    
+env: 
+  ROOT_PATH: '${{ github.workspace }}/src/deployment${{ github.event.inputs.deployment }}/terraform'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+
+
+      - name: Install Ansible
+        run: |
+          pip install ansible
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i "$(System.DefaultWorkingDirectory)/_sub-intelligent-automation/src/resources/deployment$(deployment)/ansible/inventory/hosts" path/to/playbook.yml --extra-vars "ansiblepass=$(Ansible-Password) ansibleuser=$(Ansible-User)"
