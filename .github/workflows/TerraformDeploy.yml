@@ -33,6 +33,7 @@ env:
   AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   STATE_FILE_NAME: deployment${{ github.event.inputs.deployment }}.tfstate
   STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
+  AZURE_STORAGE_SAS_TOKEN: ${{secrets.AZURE_STORAGE_SAS_TOKEN}}
   
   
 
@@ -58,8 +59,10 @@ jobs:
           export ARM_RESOURCE_GROUP_NAME="same0099"
           export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
           export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
+          export ARM_SAS_TOKEN="${{env.AZURE_STORAGE_SAS_TOKEN}}"
           export ARM_BLOB_KEY="deployment${{ github.event.inputs.deployment }}./.tfstate"
-          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="access_key=${ARM_ACCESS_KEY}" -backend-config="subscription_id=${ARM_SUBSCRIPTION_ID}" -backend-config=key="blob_key=${ARM_BLOB_KEY}"
+
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="access_key=${ARM_ACCESS_KEY}" -backend-config="subscription_id=${ARM_SUBSCRIPTION_ID}" -backend-config=key="blob_key=${ARM_BLOB_KEY}" -backend-config="sas_token=${ARM_SAS_TOKEN}"
          # working-directory: ${{ env.ROOT_PATH }}
           
           
@@ -75,7 +78,7 @@ jobs:
         continue-on-error: true
          
       - name: Terraform Init
-        run: terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="access_key=${ARM_ACCESS_KEY}" -backend-config="subscription_id=${ARM_SUBSCRIPTION_ID}" -backend-config=key="blob_key=${ARM_BLOB_KEY}"
+        run: terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="access_key=${ARM_ACCESS_KEY}" -backend-config="subscription_id=${ARM_SUBSCRIPTION_ID}" -backend-config=key="blob_key=${ARM_BLOB_KEY}" -backend-config="sas_token=${ARM_SAS_TOKEN}"
         working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Plan
