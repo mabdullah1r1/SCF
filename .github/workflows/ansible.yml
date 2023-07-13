@@ -17,7 +17,7 @@ defaults:
     
     
 env: 
-  ROOT_PATH: '${{ github.workspace }}/_sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts'
+  ROOT_PATH: '${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts'
 
 jobs:
   deploy:
@@ -34,4 +34,4 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-          ansible-playbook -i ${{ env.ROOT_PATH }} "${{ github.workspace }}/_sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=$(Ansible-Password) ansibleuser=$(Ansible-User)"
+          ansible-playbook -i ${{ env.ROOT_PATH }} "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=$(Ansible-Password) ansibleuser=$(Ansible-User)"
