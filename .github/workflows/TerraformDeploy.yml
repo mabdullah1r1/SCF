@@ -105,7 +105,7 @@ jobs:
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
     needs: [Terraform_Init]
     environment: production
-    runs-on: ubuntu-latest
+    runs-on: myhosted
 
     steps:
       - name: Checkout
