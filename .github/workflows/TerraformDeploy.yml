@@ -59,9 +59,8 @@ jobs:
           export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
           export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
           export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}./.tfstate"
-          working-directory: ${{ env.ROOT_PATH }}
           terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="key=${ARM_BLOB_NAME}"
-          
+        working-directory: ${{ env.ROOT_PATH }}  
           
           
       - name: Setup Terraform
