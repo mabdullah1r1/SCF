@@ -14,13 +14,13 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_pet" "rg_name" {
-  length    = 2
-  separator = "-"
-}
+#resource "random_pet" "rg_name" {
+#  length    = 2
+#  separator = "-"
+#}
 
 resource "azurerm_resource_group" "example" {
-  name     = mogjgfj0
+  name     = "azsxdc001"
   location = "eastus2"
 }
 
