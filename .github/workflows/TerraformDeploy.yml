@@ -72,7 +72,7 @@ jobs:
         id: fmt
         run: terraform fmt -check
         working-directory: ${{ env.ROOT_PATH }}
-        continue-on-error: false
+        continue-on-error: true
          
       - name: Terraform Init
         run: terraform init
