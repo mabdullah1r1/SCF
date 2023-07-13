@@ -20,7 +20,7 @@ resource "random_pet" "rg_name" {
 }
 
 resource "azurerm_resource_group" "example" {
-  name     = mogjgfjfk1111000
+  name     = mogjgfj0
   location = "eastus2"
 }
 
