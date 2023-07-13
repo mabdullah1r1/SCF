@@ -20,7 +20,7 @@ resource "random_pet" "rg_name" {
 }
 
 resource "azurerm_resource_group" "example" {
-  name     = above-mayfly
+  name     = "above-mayfly"
   location = "eastus2"
 }
 
