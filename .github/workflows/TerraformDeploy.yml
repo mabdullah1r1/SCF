@@ -45,7 +45,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: git@github.com:r1-development/ce-terraform-infra.git
+          repository: https://github.com/r1-development/ce-terraform-infra.git
         
       - name: Set Environment Variables
         run: |
