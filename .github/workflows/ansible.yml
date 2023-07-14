@@ -43,12 +43,8 @@ jobs:
 
 
   Terraform_Init:
-
-    if [[ $PLAN == true ]]; then
-    else
-       echo "Skipping application deployment..."
-    fi
-          
+    
+    if: ${{ PLAN != 'true' }}
   
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
