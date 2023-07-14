@@ -104,7 +104,7 @@ jobs:
   Terraform_Apply:
 
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
-#    needs: [Terraform_Init]
+    needs: [Terraform_Init]
     environment: production
     runs-on: myhosted
 
@@ -163,7 +163,7 @@ jobs:
 
     name: 'TF Ansible Deployment${{ github.event.inputs.deployment }}'
     environment: production
-#    needs: [Terraform_Apply]
+    needs: [Terraform_Apply]
     
     runs-on: myhosted
 
