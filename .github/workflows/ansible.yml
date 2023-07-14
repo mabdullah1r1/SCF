@@ -168,7 +168,7 @@ jobs:
     runs-on: myhosted
   #  if: ${{ always() }}
     if: ${{ github.event.inputs.ansible == 'true' }}
-    needs: [Terraform_Apply]
+  #  needs: [Terraform_Apply]
 
     steps:
       - name: Checkout code
