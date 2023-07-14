@@ -43,7 +43,9 @@ jobs:
 
 
   Terraform_Init:
-
+  
+    env:
+      PLAN: ${{ github.event.inputs.plan == 'true' }}    
     if: ${{ env.PLAN != 'true' }}
   
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
