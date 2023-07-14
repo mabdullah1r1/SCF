@@ -44,7 +44,7 @@ jobs:
 
   Terraform_Init:
     
-    if: ${{ github.event.inputs.plan != 'true' }}
+    unless: ${{ github.event.inputs.plan != 'true'}} 
   
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
@@ -164,6 +164,7 @@ jobs:
 
     name: 'TF Ansible Deployment${{ github.event.inputs.deployment }}'
     environment: production
+    needs: [Terraform_Apply]
     runs-on: myhosted
 
 
