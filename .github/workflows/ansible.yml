@@ -167,13 +167,13 @@ jobs:
     if: always ()
     needs: [Terraform_Init, Terraform_Apply]  
     runs-on: myhosted
-    if: ${{ github.event.inputs.ansible == 'true' }}
+    
 
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        if: ${{ github.event.inputs.ansible == 'true' }}
 #     - name: Install Ansible
 #       run: |
 #          pip install ansible
