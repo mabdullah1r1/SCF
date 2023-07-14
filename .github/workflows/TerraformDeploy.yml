@@ -49,7 +49,7 @@ jobs:
 
       - name: Clone Module Repository
         run: |
-          git clone https://github.com/owner/module-repo.git path/to/modules/module-name
+          git clone https://github.com/r1-development/ce-terraform-infra.git path/to/modules/module-name
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
 
       - name: Set Environment Variables
