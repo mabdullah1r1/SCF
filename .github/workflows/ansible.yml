@@ -177,16 +177,16 @@ jobs:
 #       run: |
 #          pip install ansible
                          
-      - name: Run Bash script
-        run: |
-           if [ -e /azp/ansible ]
-           then
-           cd /azp/ansible
-           git pull git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
-           else
-           cd /azp
-           git clone git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
-           fi
+#      - name: Run Bash script
+#        run: |
+#           if [ -e /azp/ansible ]
+#           then
+#           cd /azp/ansible
+#           git pull git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
+#           else
+#           cd /azp
+#           git clone git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
+#           fi
                                 
                              
       - name: Run Ansible playbook
