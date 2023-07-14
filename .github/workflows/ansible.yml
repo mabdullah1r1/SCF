@@ -167,7 +167,7 @@ jobs:
     environment: production
     runs-on: myhosted
     if: ${{ github.event.inputs.ansible == 'true' }}
-    needs: [Terraform_Init]
+    needs: [Terraform_Apply]
 
     steps:
       - name: Checkout code
