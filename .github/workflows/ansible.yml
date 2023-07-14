@@ -37,18 +37,16 @@ env:
   STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
   AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
- # plan: ${{ github.event.inputs.plan }}
-  apply: ${{github.event.inputs.apply}}
+
 
 jobs:
 
 
   Terraform_Init:
     
-    if: ${{ github.event.inputs.plan == 'true' }}
-
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
+    if: ${{ github.event.inputs.plan == 'true' }}
 
     steps:
       - name: Checkout
@@ -105,12 +103,13 @@ jobs:
 
 
   Terraform_Apply:
-    if: ${{ github.event.inputs.apply == 'true' }}
+    
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
  #   needs: [Terraform_Init]
     environment: production
     runs-on: myhosted
-
+    if: ${{ github.event.inputs.apply == 'true' }}
+    
     steps:
 
         
@@ -161,13 +160,11 @@ jobs:
 
   Deploy_Ansible:
 
-
     name: 'TF Ansible Deployment${{ github.event.inputs.deployment }}'
     environment: production
-    needs: [Terraform_Apply, Terraform_Init]
-    
+    needs: [Terraform_Apply, Terraform_Init]  
     runs-on: myhosted
-
+    if: ${{ github.event.inputs.apply == 'true' }}
 
 
     steps:
