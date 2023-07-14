@@ -9,11 +9,11 @@ on:
         default: ''
  
       apply:
-        description: 'Apply'
+        description: 'Plan'
         required: true
         type: boolean
       plan:
-        description: 'Plan'
+        description: 'Apply'
         required: true
         type: boolean
       ansible:
