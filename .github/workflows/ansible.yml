@@ -37,7 +37,8 @@ env:
   STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
   AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
-  plan: ${{ github.event.inputs.plan }}
+ # plan: ${{ github.event.inputs.plan }}
+  apply: ${{github.event.inputs.apply}}
 
 jobs:
 
@@ -104,9 +105,9 @@ jobs:
 
 
   Terraform_Apply:
-
+    if: ${{ github.event.inputs.apply == 'true' }}
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
- #   needs: [Terraform_Init]
+    needs: [Terraform_Init]
     environment: production
     runs-on: myhosted
 
