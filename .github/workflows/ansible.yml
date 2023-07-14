@@ -164,6 +164,7 @@ jobs:
 
     name: 'TF Ansible Deployment${{ github.event.inputs.deployment }}'
     environment: production
+    if: always ()
     needs: [Terraform_Init, Terraform_Apply]  
     runs-on: myhosted
     if: ${{ github.event.inputs.ansible == 'true' }}
