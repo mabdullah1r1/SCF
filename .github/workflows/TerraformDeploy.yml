@@ -42,8 +42,7 @@ jobs:
     runs-on: myhosted
     
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+
         
       - name: Set Environment Variables
         run: |
