@@ -107,7 +107,7 @@ jobs:
   Terraform_Apply:
     if: ${{ github.event.inputs.apply == 'true' }}
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
-    needs: [Terraform_Init]
+ #   needs: [Terraform_Init]
     environment: production
     runs-on: myhosted
 
@@ -118,8 +118,6 @@ jobs:
         run: |
           echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
           
-
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
