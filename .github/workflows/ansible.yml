@@ -7,8 +7,19 @@ on:
         description: 'deployment'
         required: true
         default: ''
-
-
+ 
+      apply:
+        description: 'Apply'
+        required: true
+        type: boolean
+      plan:
+        description: 'Plan'
+        required: true
+        type: boolean
+      ansible:
+        description: 'Ansible'
+        required: true
+        type: boolean       
         
 
 defaults:
@@ -17,21 +28,157 @@ defaults:
     
     
 env: 
-  ROOT_PATH: '${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts'
+  ROOT_PATH: '${{ github.workspace }}/src/deployment${{ github.event.inputs.deployment }}/terraform'
+  ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+  ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+  STORAGE_ACCOUNT_NAME: ${{secrets.AZURE_STORAGE_NAME}}
+  STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
+  AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  Terraform_Init:
+    unless: ${{ github.event.inputs.plan == true }}
+    name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
+    runs-on: myhosted
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set Environment Variables
+        run: |
+          echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV
+          echo "PLAN=${{ github.event.inputs.plan }}" >> $GITHUB_ENV
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+ 
+      - name: Configure AzureRM Backend
+        run: |
+          export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
+          export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
+          export ARM_RESOURCE_GROUP_NAME="same0099"
+          export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
+          export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
+          export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}.tfstate"
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="key=${ARM_BLOB_NAME}"
+        working-directory: ${{ env.ROOT_PATH }}  
+          
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.3
+        
+      - name: Terraform Format 
+        id: fmt
+        run: terraform fmt -check
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: true
+         
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          
+          if [[ $PLAN == true ]]; then
+            echo "Deploying the terraform to $PLAN environment..."
+            terraform plan -out=tfplan.out
+          else
+            echo "Skipping application deployment..."
+          fi
+        
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: false
+
+  Terraform_Apply:
+    unless: ${{ github.event.inputs.apply == true }} 
+    name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
+    needs: [Terraform_Init]
+    environment: production
+    runs-on: myhosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set Environment Variables
+        run: |
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+          
+
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.3
+                   
+      - name: Configure AzureRM Backend
+        run: |
+          export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
+          export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
+          export ARM_RESOURCE_GROUP_NAME="same0099"
+          export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
+          export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
+          export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}.tfstate"
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="key=${ARM_BLOB_NAME}"
+        working-directory: ${{ env.ROOT_PATH }}   
+
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
+
+
+
+      - name: Terraform Apply
+      
+        run: |
+          
+          if [[ $APPLY == true ]]; then
+            echo "Deploying the terraform to $APPLY environment..."
+            cd ${{ env.ROOT_PATH }}
+            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
+                      
+          else
+             echo "Skipping application deployment..."
+          fi
+          
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: false     
+
+  Deploy_Ansible:
+    unless: ${{ github.event.inputs.ansible == true }} 
+    name: 'TF Ansible Deployment${{ github.event.inputs.deployment }}'
+    environment: production
+    runs-on: myhosted
+ 
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-
-#      - name: Install Ansible
-#        run: |
+#     - name: Install Ansible
+#       run: |
 #          pip install ansible
-
+                         
+      - name: Run Bash script
+        run: |
+           if [ -e /azp/ansible ]
+           then
+           cd /azp/ansible
+           git pull git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
+           else
+           cd /azp
+           git clone git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
+           fi
+                                
+                             
       - name: Run Ansible playbook
         run: |
-          ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
+           ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
+
