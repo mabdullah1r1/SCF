@@ -110,8 +110,7 @@ jobs:
     runs-on: myhosted
     if: ${{ github.event.inputs.apply == 'true' }}
     
-    steps:
-
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v2
