@@ -61,7 +61,6 @@ jobs:
  
       - name: Configure AzureRM Backend
         run: |
-          if [[ $PLAN == true ]]; then
           export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
           export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
           export ARM_RESOURCE_GROUP_NAME="same0099"
@@ -70,9 +69,7 @@ jobs:
           export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}.tfstate"
           terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="key=${ARM_BLOB_NAME}"
         working-directory: ${{ env.ROOT_PATH }}  
-          else
-            echo "Skipping application deployment..."
-          fi
+
           
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -81,24 +78,14 @@ jobs:
         
       - name: Terraform Format 
         id: fmt
-        run: |
-         if [[ $PLAN == true ]]; then
-         terraform fmt -check
+        run: terraform fmt -check
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: true
-         else
-            echo "Skipping application deployment..."
-         fi
 
       - name: Terraform Init
-        run: |
-
-         if [[ $PLAN == true ]]; then
-         terraform init
+        run: terraform init
         working-directory: ${{ env.ROOT_PATH }}
-         else
-            echo "Skipping application deployment..."
-          fi
+
 
 
       - name: Terraform Plan
