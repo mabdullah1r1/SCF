@@ -47,7 +47,7 @@ jobs:
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
     if: ${{ github.event.inputs.plan == 'true' }}
-    needs: [Terraform_ansible, Terraform_Apply]
+    
 
     steps:
       - name: Checkout
@@ -106,7 +106,7 @@ jobs:
   Terraform_Apply:
     
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
- #   needs: [Terraform_Init]
+    needs: [Terraform_Init]
     environment: production
     runs-on: myhosted
     if: ${{ github.event.inputs.apply == 'true' }}
