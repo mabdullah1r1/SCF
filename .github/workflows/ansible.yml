@@ -37,15 +37,14 @@ env:
   STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
   AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
   STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
-
+  echo "plan=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+  echo "apply=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+  echo "ansible=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
 jobs:
   Terraform_Init:
- #   unless: ${{ github.event.inputs.plan == true }}
+    if: ${{ env.PLAN != 'true' }}
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
-    env:
-      SKIP_INIT: ${{ github.event.inputs.plan == 'true' }}
-    if: ${{ env.SKIP_INIT != 'true' }}
 
     steps:
       - name: Checkout
@@ -97,6 +96,7 @@ jobs:
         
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: false
+
 
   Terraform_Apply:
 #    unless: ${{ github.event.inputs.apply == true }} 
