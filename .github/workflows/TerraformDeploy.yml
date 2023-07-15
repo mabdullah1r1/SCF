@@ -71,6 +71,7 @@ jobs:
  
       - name: Configure AzureRM Backend
         run: |
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
           export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
           export ARM_RESOURCE_GROUP_NAME="same0099"
