@@ -44,7 +44,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
+ #       with:
 #          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 #          fetch-depth: 0
 #          repository: https://github.com/r1-development/ce-terraform-infra.git
