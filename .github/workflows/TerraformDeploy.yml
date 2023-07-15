@@ -55,10 +55,10 @@ jobs:
 #          ssh-keyscan dev.azure.com >> ~/.ssh/known_hosts
 
 
-      - name: Clone Module Repository
-        run: |
-         "git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/terraform-infra"
-          github_token: ${{ secrets.MY_DEVOPS_TOKEN }}
+ #     - name: Clone Module Repository
+ #       run: |
+ #        "git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/terraform-infra"
+ #         github_token: ${{ secrets.MY_DEVOPS_TOKEN }}
 
       - name: Set Environment Variables
         run: |
