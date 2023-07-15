@@ -60,7 +60,7 @@ jobs:
 
       - name: Clone Module Repository
         run: |
-          https://github.com/r1-development/ce-terraform-infra
+          https://github.com/mabdullah1r1/Terraform-infra
           github_token: ${{ secrets.MY_DEVOPS_TOKEN }}
 
       - name: Set Environment Variables
