@@ -44,20 +44,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-#        with:
+        with:
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          fetch-depth: 0
 #          repository: https://github.com/r1-development/ce-terraform-infra.git
 
-      - name: Configure SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-#          ssh-keyscan dev.azure.com >> ~/.ssh/known_hosts
+
+#      - name: Configure SSH Key
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          ssh-keyscan https://github.com/r1-development/ce-terraform-infra.git >> ~/.ssh/known_hosts
 
 
  #     - name: Clone Module Repository
  #       run: |
- #        "git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/terraform-infra"
+ #        "git@github.com:r1-development/ce-terraform-infra.git"
  #         github_token: ${{ secrets.MY_DEVOPS_TOKEN }}
 
       - name: Set Environment Variables
