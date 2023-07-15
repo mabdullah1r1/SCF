@@ -59,8 +59,9 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
-#      - name: checking sshkey
-#        run: ssh -T git@github.com          
+      - name: checking sshkey
+        run: ssh -T git@github.com 
+        continue-on-error: true         
 
       - name: Clone Module Repository
         run: |
