@@ -52,12 +52,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.HOSTS_KNOWN }} >> ~/.ssh/known_hosts
 
 
       - name: Clone Module Repository
         run: |
-          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name
+          git::git@ssh.dev.azure.com:v3/R1RCM-ORG/R1-Secure%20Cloud%20Foundations/R1-Terraform-Deploy
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
 
       - name: Set Environment Variables
