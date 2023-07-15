@@ -58,10 +58,10 @@ jobs:
 #          ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 
-      - name: Clone Module Repository
-        run: |
-          git clone https://github.com/r1-development/scf-general-nprd.git path/to/modules/module-name
-          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+#      - name: Clone Module Repository
+#        run: |
+#          git clone https://github.com/r1-development/scf-general-nprd.git path/to/modules/module-name
+#          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
 
       - name: Set Environment Variables
         run: |
