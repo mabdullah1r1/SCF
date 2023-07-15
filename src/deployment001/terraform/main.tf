@@ -42,7 +42,7 @@ provider "azurerm" {
 
 variable "inputs" {}
 module "infra" {
-  source = "git::git@ssh.dev.azure.com:v3/R1RCM-ORG/R1-Secure%20Cloud%20Foundations/R1-Terraform-Deploy"
+  source = "git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/terraform-infra"
   inputs = var.inputs
   providers = {
     azurerm.remote4 = azurerm.remote4
