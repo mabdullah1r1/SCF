@@ -52,12 +52,12 @@ jobs:
 
       - name: Configure SSH Key
         run: |
-          ssh -T git@github.com
+          
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan git@github.com >> ~/.ssh/known_hosts
-
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh -T git@github.com
 
       - name: Clone Module Repository
         run: |
