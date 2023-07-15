@@ -55,12 +55,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-#          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keyscan git@github.com >> ~/.ssh/known_hosts
 
 
-#      - name: Clone Module Repository
-#        run: |
-#          git clone https://github.com/r1-development/scf-general-nprd.git path/to/modules/module-name
+      - name: Clone Module Repository
+        run: |
+          git clone https://github.com/r1-development/scf-general-nprd.git path/to/modules/module-name
 #          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
 
       - name: Set Environment Variables
