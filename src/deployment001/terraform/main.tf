@@ -42,7 +42,7 @@ provider "azurerm" {
 
 variable "inputs" {}
 module "infra" {
-  source = "https://github.com/r1-development/ce-terraform-infra.git"
+  source = "https://github.com/r1-development/ce-terraform-infra"
   inputs = var.inputs
   providers = {
     azurerm.remote4 = azurerm.remote4
