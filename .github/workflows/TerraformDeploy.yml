@@ -52,6 +52,7 @@ jobs:
 
       - name: Configure SSH Key
         run: |
+          ssh -T git@github.com
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
