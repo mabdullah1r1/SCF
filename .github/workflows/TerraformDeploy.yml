@@ -50,7 +50,8 @@ jobs:
 #          repository: https://github.com/r1-development/ce-terraform-infra.git
 
       -name: checking connection 
-       run: ssh -T git@github.com
+       run: |
+        ssh -T git@github.com
 
       - name: Configure SSH Key
         run: |
