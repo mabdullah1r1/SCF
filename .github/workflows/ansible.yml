@@ -44,9 +44,7 @@ env:
 jobs:
 
 
-
   Terraform_Init:  
-    
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
     if: ${{ github.event.inputs.plan == 'true' }}
@@ -62,7 +60,7 @@ jobs:
           echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV
           echo "PLAN=${{ github.event.inputs.plan }}" >> $GITHUB_ENV
           echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
-          
+
  
       - name: Configure SSH Key
         run: |
@@ -122,7 +120,7 @@ jobs:
           if [[ $PLAN == true ]]; then
             echo "Deploying the terraform to $PLAN environment..."
             terraform plan -out=tfplan.out
-#            terraform plan -out=tfplan.out
+#           terraform plan -out=tfplan.out
           else
             echo "Skipping application deployment..."
           fi
@@ -206,8 +204,7 @@ jobs:
             echo "Deploying the terraform to $APPLY environment..."
             cd ${{ env.ROOT_PATH }}
             terraform apply -auto-approve
-#            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
-                      
+#           terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}                  
           else
              echo "Skipping application deployment..."
           fi
