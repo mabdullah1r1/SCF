@@ -1,4 +1,4 @@
-name: 'Ta.yml'
+name: 'Ta'
 
 on:
   workflow_dispatch:
