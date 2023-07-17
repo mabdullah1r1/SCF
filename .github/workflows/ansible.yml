@@ -172,9 +172,9 @@ jobs:
         working-directory: ${{ env.ROOT_PATH }}   
 
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ${{ env.ROOT_PATH }}
+#      - name: Terraform Init
+#        run: terraform init
+#        working-directory: ${{ env.ROOT_PATH }}
 
       - name: Terraform Apply
       
@@ -200,6 +200,7 @@ jobs:
   #  if: ${{ always() }}
     if: ${{ github.event.inputs.ansible == 'true' }}
   #  needs: [Terraform_Apply]
+
 
     steps:
       - name: Checkout code
