@@ -40,7 +40,6 @@ env:
 
 
 jobs:
-
   Terraform_Init:
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
@@ -113,33 +112,25 @@ jobs:
         
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: true
-      
+        
+
   Terraform_Apply:
-    
     name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
     needs: [Terraform_Init]
     environment: production
     runs-on: myhosted
-    if: ${{ github.event.inputs.apply == 'true' }}
-    
-    
+    if: ${{ github.event.inputs.apply == 'true' }}   
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: Set Environment Variables
-        run: |
-          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
-          
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.5.3
 
       - name: Configure SSH Key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
-          chmod 600 ~/.ssh/id_rsa01
+          
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking sshkey
@@ -148,7 +139,19 @@ jobs:
 
       - name: Clone Module Repository
         run: |
-          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name          
+          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name
+
+        
+      - name: Set Environment Variables
+        run: |
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+          echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV         
+
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.3
                    
       - name: Configure AzureRM Backend
         run: |
@@ -166,11 +169,15 @@ jobs:
         run: terraform init
         working-directory: ${{ env.ROOT_PATH }}
 
+
+
       - name: Terraform Apply
       
-        run: terraform apply -auto-approve            
+        run: terraform apply -auto-approve 
+
         working-directory: ${{ env.ROOT_PATH }}
-        continue-on-error: false     
+        continue-on-error: false    
+
 
 
 
@@ -179,9 +186,9 @@ jobs:
     name: 'TF Ansible Deployment${{ github.event.inputs.deployment }}'
     environment: production
     runs-on: myhosted
-  #  if: ${{ always() }}
+    if: ${{ always() }}
     if: ${{ github.event.inputs.ansible == 'true' }}
-  #  needs: [Terraform_Apply]
+    needs: [Terraform_Apply]
 
 
     steps:
