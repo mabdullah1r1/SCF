@@ -62,6 +62,7 @@ jobs:
           echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV
           echo "PLAN=${{ github.event.inputs.plan }}" >> $GITHUB_ENV
           echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+          
  
       - name: Configure SSH Key
         run: |
@@ -163,8 +164,8 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
+          chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking sshkey
@@ -239,8 +240,8 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
+          chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking sshkey
