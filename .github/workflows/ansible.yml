@@ -197,7 +197,7 @@ jobs:
             echo "Deploying the terraform to $APPLY environment..."
             cd ${{ env.ROOT_PATH }}
             terraform apply -auto-approve
-#            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
+            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
                       
           else
              echo "Skipping application deployment..."
@@ -225,25 +225,6 @@ jobs:
 #       run: |
 #          pip install ansible
                          
-
-
-      - name: Configure SSH Key
-        run: |
-          
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-  
-      - name: checking sshkey
-        run: ssh -T git@github.com 
-        continue-on-error: true         
-
-
-
-
-
-
 #      - name: Run Bash script
 #        run: |
 #           if [ -e /azp/ansible ]
