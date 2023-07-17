@@ -65,7 +65,7 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          touch -p ~/.ssh/id_rsa01
+          touch -p ~/.ssh/id_rsa01.txt
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
           chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
