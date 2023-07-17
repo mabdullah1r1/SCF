@@ -112,8 +112,7 @@ jobs:
           
           if [[ $PLAN == true ]]; then
             echo "Deploying the terraform to $PLAN environment..."
-            terraform plan 
-#            terraform plan -out=tfplan.out
+            terraform plan -out=tfplan.out
           else
             echo "Skipping application deployment..."
           fi
