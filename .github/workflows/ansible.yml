@@ -175,8 +175,6 @@ jobs:
         run: terraform init
         working-directory: ${{ env.ROOT_PATH }}
 
-
-
       - name: Terraform Apply
       
         run: |
@@ -209,6 +207,7 @@ jobs:
 #     - name: Install Ansible
 #       run: |
 #          pip install ansible
+
                          
 #      - name: Run Bash script
 #        run: |
@@ -220,9 +219,25 @@ jobs:
 #           cd /azp
 #           git clone git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
 #           fi
-                                
+
+      - name: Configure SSH Key
+        run: |
+          
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+  
+      - name: checking sshkey
+        run: ssh -T git@github.com 
+        continue-on-error: true         
+
+      - name: Clone Module Repository
+        run: |
+          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name                                     
                              
       - name: Run Ansible playbook
         run: |
+        
            ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
 
