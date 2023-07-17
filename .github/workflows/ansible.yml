@@ -110,7 +110,6 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          
           if [[ $PLAN == true ]]; then
             echo "Deploying the terraform to $PLAN environment..."
             terraform plan
@@ -146,8 +145,6 @@ jobs:
 
       - name: Configure SSH Key
         run: |
-          
-          mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
           chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
@@ -225,8 +222,6 @@ jobs:
 
       - name: Configure SSH Key
         run: |
-          
-          mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
           chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
