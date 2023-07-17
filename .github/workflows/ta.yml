@@ -1,0 +1,164 @@
+name: 'TerraformDeploy'
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment:
+        description: 'deployment'
+        required: true
+        default: ''
+
+
+      apply:
+        description: 'Apply'
+        required: true
+        type: boolean
+      plan:
+        description: 'Plan'
+        required: true
+        type: boolean
+      ansible:
+        description: 'Ansible'
+        required: true
+        type: boolean 
+
+defaults:
+  run:
+    shell: bash
+
+env: 
+  ROOT_PATH: '${{ github.workspace }}/src/deployment${{ github.event.inputs.deployment }}/terraform'
+  ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+  ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+  STORAGE_ACCOUNT_NAME: ${{secrets.AZURE_STORAGE_NAME}}
+  STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
+  AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  STATE_FILE_NAME: deployment${{ github.event.inputs.deployment }}.tfstate
+  STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
+  
+  
+
+jobs:
+  Terraform_Init:
+    name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
+    runs-on: myhosted
+    if: ${{ github.event.inputs.plan == 'true' }}    
+    
+    steps:
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.3
+
+      - name: Checkout
+
+      - name: Configure SSH Key
+        run: |
+          
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+  
+      - name: checking sshkey
+        run: ssh -T git@github.com 
+        continue-on-error: true         
+
+      - name: Clone Module Repository
+        run: |
+          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name
+
+
+      - name: Set Environment Variables
+        run: |
+          echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV
+          echo "PLAN=${{ github.event.inputs.plan }}" >> $GITHUB_ENV
+
+          
+ 
+      - name: Configure AzureRM Backend
+        run: |
+         
+          export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
+          export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
+          export ARM_RESOURCE_GROUP_NAME="same0099"
+          export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
+          export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
+          export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}.tfstate"
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="key=${ARM_BLOB_NAME}"
+
+        working-directory: ${{ env.ROOT_PATH }}  
+          
+          
+
+        
+      - name: Terraform Format 
+        id: fmt
+        run: terraform fmt -check
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: true
+         
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan 
+
+        
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: true
+        
+
+  Terraform_Apply:
+    name: 'TF Apply Deployment${{ github.event.inputs.deployment }}'
+    needs: [Terraform_Init]
+    environment: production
+    runs-on: myhosted
+    if: ${{ github.event.inputs.apply == 'true' }}   
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set Environment Variables
+        run: |
+          echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
+          echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV         
+
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.3
+                   
+      - name: Configure AzureRM Backend
+        run: |
+          export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
+          export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
+          export ARM_RESOURCE_GROUP_NAME="same0099"
+          export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
+          export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
+          export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}.tfstate"
+          terraform init -backend-config="resource_group_name=${ARM_RESOURCE_GROUP_NAME}" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAME}" -backend-config="container_name=${ARM_CONTAINER_NAME}" -backend-config="key=${ARM_BLOB_NAME}"
+        working-directory: ${{ env.ROOT_PATH }}   
+
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
+
+
+
+      - name: Terraform Apply
+      
+        run: terraform apply -auto-approve 
+
+        working-directory: ${{ env.ROOT_PATH }}
+        continue-on-error: false     
+        
+
