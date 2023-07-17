@@ -54,6 +54,7 @@ jobs:
           terraform_version: 1.5.3
 
       - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Configure SSH Key
         run: |
@@ -124,6 +125,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Configure SSH Key
+        run: |
+          
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+  
+      - name: checking sshkey
+        run: ssh -T git@github.com 
+        continue-on-error: true         
+
+      - name: Clone Module Repository
+        run: |
+          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name
+
         
       - name: Set Environment Variables
         run: |
