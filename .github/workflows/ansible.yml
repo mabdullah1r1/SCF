@@ -65,8 +65,9 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          touch -p ~/.ssh/id_rsa01
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
+          chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking ssh-key
@@ -147,8 +148,8 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
+          chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking sshkey
@@ -225,8 +226,8 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
+          chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking sshkey
@@ -240,7 +241,7 @@ jobs:
       - name: Run Ansible playbook
         run: |
 
-          if [[ $APPLY == true ]]; then
+          if [[ $Ansible == true ]]; then
            echo "Deploying the Ansible-Playbook"
            ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
           else
