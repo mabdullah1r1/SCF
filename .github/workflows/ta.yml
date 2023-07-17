@@ -1,4 +1,4 @@
-name: 'TerraformDeploy'
+name: 'Ta.yml'
 
 on:
   workflow_dispatch:
