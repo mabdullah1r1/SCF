@@ -39,12 +39,12 @@ env:
   STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
 
 
-
-
 jobs:
 
 
+
   Terraform_Init:  
+    
     name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
     runs-on: myhosted
     if: ${{ github.event.inputs.plan == 'true' }}
@@ -60,22 +60,15 @@ jobs:
           echo "DEPLOYMENT=${{ github.event.inputs.deployment }}" >> $GITHUB_ENV
           echo "PLAN=${{ github.event.inputs.plan }}" >> $GITHUB_ENV
           echo "APPLY=${{ github.event.inputs.apply }}" >> $GITHUB_ENV
-
  
       - name: Configure SSH Key
         run: |
-#         Create the '~/.ssh' directory if it doesn't already exist:
+          
           mkdir -p ~/.ssh
-#         Create the '~/.ssh' directory if it doesn't already exist:
-          touch -p ~/.ssh/id_rsa01.txt          
-#         Write the value of the AZURE_SSH_PRIVATE_KEY secret to the '~/.ssh/id_rsa' file:
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
-#         Set appropriate permissions (read and write only for the owner) on the ~/.ssh/id_rsa file:
-          chmod 600 ~/.ssh/id_rsa01
-#         Add the GitHub server '(github.com)' to the '~/.ssh/known_hosts' file by fetching and storing the server's public key:
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-
+  
       - name: checking sshkey
         run: ssh -T git@github.com 
         continue-on-error: true         
@@ -120,7 +113,7 @@ jobs:
           if [[ $PLAN == true ]]; then
             echo "Deploying the terraform to $PLAN environment..."
             terraform plan -out=tfplan.out
-#           terraform plan -out=tfplan.out
+#            terraform plan -out=tfplan.out
           else
             echo "Skipping application deployment..."
           fi
@@ -162,8 +155,8 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
-          chmod 600 ~/.ssh/id_rsa01
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking sshkey
@@ -204,7 +197,8 @@ jobs:
             echo "Deploying the terraform to $APPLY environment..."
             cd ${{ env.ROOT_PATH }}
             terraform apply -auto-approve
-#           terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}                  
+#            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
+                      
           else
              echo "Skipping application deployment..."
           fi
@@ -237,13 +231,16 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
-          chmod 600 ~/.ssh/id_rsa01
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking sshkey
         run: ssh -T git@github.com 
         continue-on-error: true         
+
+
+
 
 
 
