@@ -237,8 +237,8 @@ jobs:
         run: |
 
           if [[ $Ansible == true ]]; then
-             echo "Deploying the Ansible-Playbook"
-             ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
+            echo "Deploying the Ansible-Playbook"
+            ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
           else
-             echo "Skipping application deployment..."
+            echo "Skipping application deployment..."
           fi
