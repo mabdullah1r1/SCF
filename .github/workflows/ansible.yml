@@ -112,7 +112,7 @@ jobs:
           
           if [[ $PLAN == true ]]; then
             echo "Deploying the terraform to $PLAN environment..."
-            terraform plan -out=tfplan.out
+            terraform plan
           else
             echo "Skipping application deployment..."
           fi
@@ -184,7 +184,7 @@ jobs:
           if [[ $APPLY == true ]]; then
             echo "Deploying the terraform to $APPLY environment..."
             cd ${{ env.ROOT_PATH }}
-            terraform apply -auto-approve ${{ needs.terraform_deploy.outputs.plan_path }}
+            terraform apply -auto-approve
                       
           else
              echo "Skipping application deployment..."
