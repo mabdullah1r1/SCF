@@ -119,7 +119,7 @@ jobs:
           fi
         
         working-directory: ${{ env.ROOT_PATH }}
-        continue-on-error: false
+        continue-on-error: true
         
  
 #      - name: Save State File to Azure Storage
