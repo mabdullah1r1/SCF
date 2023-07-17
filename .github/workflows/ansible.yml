@@ -220,6 +220,7 @@ jobs:
 #           git clone git@ssh.dev.azure.com:v3/R1RCM-ORG/Cloud%20Engineering%20-%20Tools/ansible
 #           fi
 
+
       - name: Configure SSH Key
         run: |
           
@@ -238,6 +239,6 @@ jobs:
                              
       - name: Run Ansible playbook
         run: |
-        
+
            ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
 
