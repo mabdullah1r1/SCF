@@ -63,11 +63,15 @@ jobs:
  
       - name: Configure SSH Key
         run: |
-          
+#         Create the '~/.ssh' directory if it doesn't already exist: 
           mkdir -p ~/.ssh
+#         Create the '~/.ssh/id_rsa01' directory if it doesn't already exist: 
           touch -p ~/.ssh/id_rsa01
+#         Write the value of the AZURE_SSH_PRIVATE_KEY secret to the ~/.ssh/id_rsa file:          
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
+#         Set appropriate permissions (read and write only for the owner) on the ~/.ssh/id_rsa file:          
           chmod 600 ~/.ssh/id_rsa01
+#         Add the GitHub server (github.com) to the ~/.ssh/known_hosts file by fetching and storing the server's public key:          
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
       - name: checking ssh-key
