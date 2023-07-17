@@ -108,16 +108,9 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: |
-          if [[ $PLAN == true ]]; then
-             echo "Deploying the terraform to $PLAN environment..."
-             terraform plan
-          else
-             echo "Skipping application deployment..."
-          fi
-        
+        run: terraform plan        
         working-directory: ${{ env.ROOT_PATH }}
-        continue-on-error: false
+        continue-on-error: true
 
 
   Terraform_Apply:
@@ -174,15 +167,7 @@ jobs:
 
       - name: Terraform Apply
       
-        run: |
-          
-          if [[ $APPLY == true ]]; then
-             echo "Deploying the terraform to $APPLY environment..."
-             terraform apply -auto-approve            
-          else
-             echo "Skipping application deployment..."
-          fi
-          
+        run: terraform apply -auto-approve            
         working-directory: ${{ env.ROOT_PATH }}
         continue-on-error: false     
 
