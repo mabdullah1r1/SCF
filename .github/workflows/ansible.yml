@@ -100,9 +100,9 @@ jobs:
 #        working-directory: ${{ env.ROOT_PATH }}
 #        continue-on-error: true
 
-#      - name: Terraform Init
-#        run: terraform init
-#        working-directory: ${{ env.ROOT_PATH }}
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.ROOT_PATH }}
 
 
 
