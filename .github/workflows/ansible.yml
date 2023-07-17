@@ -39,6 +39,8 @@ env:
   STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
 
 
+
+
 jobs:
 
 
@@ -63,12 +65,18 @@ jobs:
  
       - name: Configure SSH Key
         run: |
-          
+#         Create the '~/.ssh' directory if it doesn't already exist:
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+#         Create the '~/.ssh' directory if it doesn't already exist:
+          touch -p ~/.ssh/id_rsa01.txt          
+#         Write the value of the AZURE_SSH_PRIVATE_KEY secret to the '~/.ssh/id_rsa' file:
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
+#         Set appropriate permissions (read and write only for the owner) on the ~/.ssh/id_rsa file:
+          chmod 600 ~/.ssh/id_rsa01
+#         Add the GitHub server '(github.com)' to the '~/.ssh/known_hosts' file by fetching and storing the server's public key:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-  
+
+
       - name: checking sshkey
         run: ssh -T git@github.com 
         continue-on-error: true         
@@ -238,12 +246,6 @@ jobs:
       - name: checking sshkey
         run: ssh -T git@github.com 
         continue-on-error: true         
-
-
-
-      - name: Clone Module Repository
-        run: |
-          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name          
 
 
 
