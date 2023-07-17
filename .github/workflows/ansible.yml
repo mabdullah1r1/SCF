@@ -63,7 +63,7 @@ jobs:
  
       - name: Configure SSH Key
         run: |
-          
+#         Create the '~/.ssh' directory if it doesn't already exist:          
           mkdir -p ~/.ssh
           touch -p ~/.ssh/id_rsa01
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
