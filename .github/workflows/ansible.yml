@@ -65,7 +65,6 @@ jobs:
         run: |
           
           mkdir -p ~/.ssh
-          touch -p ~/.ssh/id_rsa01.txt
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01
           chmod 600 ~/.ssh/id_rsa01
           ssh-keyscan github.com >> ~/.ssh/known_hosts
@@ -111,10 +110,10 @@ jobs:
         id: plan
         run: |
           if [[ $PLAN == true ]]; then
-            echo "Deploying the terraform to $PLAN environment..."
-            terraform plan
+             echo "Deploying the terraform to $PLAN environment..."
+             terraform plan
           else
-            echo "Skipping application deployment..."
+             echo "Skipping application deployment..."
           fi
         
         working-directory: ${{ env.ROOT_PATH }}
@@ -178,8 +177,8 @@ jobs:
         run: |
           
           if [[ $APPLY == true ]]; then
-            echo "Deploying the terraform to $APPLY environment..."
-            terraform apply -auto-approve            
+             echo "Deploying the terraform to $APPLY environment..."
+             terraform apply -auto-approve            
           else
              echo "Skipping application deployment..."
           fi
@@ -238,8 +237,8 @@ jobs:
         run: |
 
           if [[ $Ansible == true ]]; then
-           echo "Deploying the Ansible-Playbook"
-           ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
+             echo "Deploying the Ansible-Playbook"
+             ansible-playbook -i ${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/inventory/hosts "${{ github.workspace }}/sub-intelligent-automation/src/resources/deployment${{ github.event.inputs.deployment }}/ansible/plays/main.yml" --extra-vars "ansiblepass=${{ secrets.Ansible-Password }} ansibleuser=${{ secrets.Ansible-User }}" --check
           else
-            echo "Skipping application deployment..."
+             echo "Skipping application deployment..."
           fi
