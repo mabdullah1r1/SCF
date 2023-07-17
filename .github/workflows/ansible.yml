@@ -69,7 +69,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
   
-      - name: checking sshkey
+      - name: checking ssh-key
         run: ssh -T git@github.com 
         continue-on-error: true         
 
@@ -183,9 +183,7 @@ jobs:
           
           if [[ $APPLY == true ]]; then
             echo "Deploying the terraform to $APPLY environment..."
-            cd ${{ env.ROOT_PATH }}
-            terraform apply -auto-approve
-                      
+            terraform apply -auto-approve            
           else
              echo "Skipping application deployment..."
           fi
