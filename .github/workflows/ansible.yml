@@ -41,6 +41,7 @@ env:
 
 jobs:
 
+    name: 'TF Plan'
 
   Terraform_Init:
     
