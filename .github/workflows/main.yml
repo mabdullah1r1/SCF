@@ -1,0 +1,21 @@
+name: 'TerraformDeploy'
+
+on:
+  workflow_dispatch:
+    inputs:
+      KeyvaultName:
+        description: 'Key_vault_name'
+        required: true
+        default: ''
+      SecretName:
+        description: 'Secret_name'
+        required: true
+        default: '' 
+      ResourceAddress:
+        description: 'Resource_Address'
+        required: true
+        default: ''   
+      ResourceId:
+        description: 'Resource_ID'
+        required: true
+        default: ''
