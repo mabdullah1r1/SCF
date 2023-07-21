@@ -1,4 +1,4 @@
-name: 'TerraformDeploy'
+name: 'Terraform-Import'
 
 on:
   workflow_dispatch:
