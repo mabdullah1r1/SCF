@@ -19,3 +19,81 @@ on:
         description: 'Resource_ID'
         required: true
         default: ''
+defaults:
+  run:
+    shell: bash
+    
+env: 
+  ROOT_PATH: '${{ github.workspace }}/src/deployment${{ github.event.inputs.deployment }}/terraform'
+  ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+  ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+  STORAGE_ACCOUNT_NAME: ${{secrets.AZURE_STORAGE_NAME}}
+  STORAGE_CONTAINER_NAME: ${{secrets.AZURE_CONTAINER_NAME}}
+  AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+  STORAGE_ACCOUNT_ACCESS_KEY: ${{secrets.STORAGE_ACCOUNT_ACCESS_KEY}}
+  
+  
+jobs:
+
+  Terraform_Init:  
+    name: 'TF Plan Deployment${{ github.event.inputs.deployment }}' 
+    runs-on: self-hosted
+    if: ${{ github.event.inputs.plan == 'true' }}
+    
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Environment Variables
+        run: |
+          echo "Key_vault_name=${{ github.event.inputs.Key_vault_name }}" >> $GITHUB_ENV
+          echo "Resource_Address=${{ github.event.inputs.Resource_Address }}" >> $GITHUB_ENV
+          echo "Resource_ID=${{ github.event.inputs.Resource_ID }}" >> $GITHUB_ENV
+          
+      - name: Configure SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa01        
+          chmod 600 ~/.ssh/id_rsa01
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+  
+      - name: checking ssh-key
+        run: ssh -T git@github.com 
+        continue-on-error: true         
+
+      - name: Clone Module Repository
+        run: |
+          
+          git clone git@github.com:r1-development/ce-terraform-infra.git path/to/modules/module-name
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.5.3
+        
+      - name: Configure AzureRM Backend
+        run: |
+          export ARM_ACCESS_KEY="${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
+          export ARM_SUBSCRIPTION_ID="${{ env.ARM_SUBSCRIPTION_ID }}"
+          export ARM_RESOURCE_GROUP_NAME="${{ env.ARM_RESOURCE_GROUP_NAME }}"
+          export ARM_STORAGE_ACCOUNT_NAME="${{ env.STORAGE_ACCOUNT_NAME }}"
+          export ARM_CONTAINER_NAME="${{ env.STORAGE_CONTAINER_NAME }}"
+          export ARM_BLOB_NAME="deployment${{ github.event.inputs.deployment }}.tfstate"
+          
+          export ADMIN_PASSWORD=$(az keyvault secret show --vault-name "${{ github.event.inputs.Key_vault_name }}" --name "admin-password" --query "value" -o tsv)
+          export DOMAIN_JOIN_USER=$(az keyvault secret show --vault-name "${{ github.event.inputs.Key_vault_name }}" --name "domain-join-user" --query "value" -o tsv)
+          export DOMAIN_JOIN_PASSWORD=$(az keyvault secret show --vault-name "${{ github.event.inputs.Key_vault_name }}" --name "domain-join-password" --query "value" -o tsv)
+       
+          terraform init -backend-config="resource_group_name=rg-terraform-core-mgmt-eus2-01" -backend-config="storage_account_name=${ARM_STORAGE_ACCOUNT_NAM}1" -backend-config="container_name=$ARM_CONTAINER_NAM" -backend-config="key=${ARM_BLOB_NAME}"
+          terraform fmt -check
+          terraform validate
+          
+          terraform import -var="admin_password=${ADMIN_PASSWORD}" -var="domain_join_user=${DOMAIN_JOIN_USER}" -var="domain_join_password=${DOMAIN_JOIN_PASSWORD}" ${{ github.event.inputs.Resource_Address }} ${{ github.event.inputs.Resource_ID }}
+  
+        working-directory: ${{ env.ROOT_PATH }}  
+        continue-on-error: false
+
+
